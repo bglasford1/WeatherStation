@@ -5,6 +5,8 @@ My goal is to create software with a more intuitive GUI interface, better graphi
 
 The source code is written in Java and contained within the "src" directory.  Java is the most widely used high level object oriented language in use today.  It is open source freeware software.  There are a number of free IDEs such as Eclipse and IntelliJ Idea.  I used IntelliJ Idea for this project, however Eclipse is just as good.   
 
+The ".idea" directory contains the IntelliJ Idea project configuration files for this project.  Notice that to build the jar file to deploy on the Raspberry PI you perform a Build -> Build Artifacts... WeatherStation.jar -> Build.  To run the software within Idea you first start the Simulator, then start the WeatherStation.  
+
 The "helptext" directory contains the help text files.  Modifying these files modifies the help text that is displayed.
 
 The "moonicons" directory contain the .png images of the 31 day phases of the moon.  Note that the Davis software only used the 5 basic phases of the moon.  
