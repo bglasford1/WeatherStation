@@ -1,0 +1,28 @@
+Evapotranspiration:
+
+This value is the summation of the evaporation of water from the ground plus the transpiration of water from plants.  This is a complicated formula that is based on temperature, relative humidity, solar radiation, pressure, wind, soil moisture and type of plant.  Currently soil moisture is not being measured.  This implementation of the formula is adjusted by multiplying the actual ET by a crop coefficient (Kc).  
+
+This program uses the CIMIS Equation which is a version of the Modified Penman Equation (Pruitt and Doorenbos, 1977) with a wind function developed at the University of California, Davis.  The input variables used in the CIMIS equation and the steps required to calculate ETo are described below.
+
+Variables Required:
+
+ea = Mean hourly vapor pressure (kPa)
+RH = Mean hourly relative humidity (%)
+Rn = Mean hourly net radiation (Wm-2)
+T = Mean hourly air temperature (Celsius) -1
+U = Mean hourly wind speed at 2 meters (ms )
+Z = Elevation of the station above mean sea level (m) Α = surface reflectance (albedo) -2
+Rs = measured solar radiation (W m )
+To = clear sky effective temperature (K) 
+Tc = cloud base temperature (K)
+εs = surface emmisivity (~1)
+εo = clear sky emissivity
+c  = fraction of cloud cover
+σ = Stefan-Boltzmann constant (5.67 x 10 W m K ) 
+k = empirical coefficient for local cloud properties
+Ts = the surface temperature (K)
+
+The equations can be found on-line.
+
+Some of the variables such as cloud cover and clear sky radiation are obtained from other formulas.  Cloud cover is based on the solar radiation measurement and the expected maximum solar radiation or clear sky radiation.  There are five clear sky radiation models.  None of them have given a satisfactory result.  THIS AREA NEEDS MORE WORK.
+

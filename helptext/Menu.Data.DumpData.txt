@@ -1,0 +1,3 @@
+Main Menu -> Data -> Dump Data:
+
+The Data main menu item contains the Dump Data sub-menu item.  Upon selection, a command is sent to the console to dump all the archive data since the last known data date.  This command shows up on the protocol telltale as the DMPAFT command.  This command sends data in five data set chunks.  This command can send up to a complete set of data.    

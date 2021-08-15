@@ -1,0 +1,3 @@
+Main Menu -> Data -> Rain Data:
+
+The Data main menu item contains the Rain Data sub-menu item.  Upon selection, a summary window is displayed that shows the monthly total for every month recorded.  The tabular view is years by months.  At the bottom of the table shows the minimum, maximum and average for each month.  At the right of the table is the totals for each year.  

@@ -1,0 +1,3 @@
+Main Menu -> Data -> Snow Graph:
+
+The Data main menu item contains the Snow Graph sub-menu item.  Upon selection, a snow data graph is displayed.  The snow graph displays the data by year as either yearly totals or by month.  This window's menu contains an Interval menu item used to switch between the two views.

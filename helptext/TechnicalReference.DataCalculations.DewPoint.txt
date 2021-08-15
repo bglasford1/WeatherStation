@@ -1,0 +1,19 @@
+Dew Point:
+
+Dew point is the temperature where the air reaches its saturation point. To cool the air further, water must be removed from the air.  This change of state requires significantly more energy than simply cooling a gas, thus this is the temperature at which cooling will slow down significantly.
+
+This program uses the Magnus formula [Sontag90].  The temperature is in degrees Celsius, the saturation vapor pressure EW (in hPa) over liquid water, is
+
+EW = α * e((b * T)/(λ + T)
+
+For the range from –45°C to 60°C, Magnus parameters are given by α = 6.112 hPa, b = 17.62 and λ = 243.12 °C. By re-stating equation (1), the dew-point temperature Dp (in °C) can be expressed from vapor pressure E.
+
+Dp = (λ * ln(E / α)) / (b - ln(E / α)
+
+Inserting the definition of relative humidity RH (in %), i.e. E = RH*EW/100 into the equation above and using equation (1) leads to the calculation of the dew point Dp from temperature T and relative humidity RH.
+
+The simplified calculation is:
+
+H = (log10(RH)-2)/0.4343 + (17.62*T)/(243.12+T)
+Dp = 243.12*H/(17.62-H)
+

@@ -1,0 +1,11 @@
+Wet Bulb Temperature:
+
+The wet bulb temperature calculation is based on a paper by Ronald Still named "Wet-Bulb Temperature from Relative Humidity and Air Temperature" dated 28 August 2011.  
+
+The equation is:
+
+Tw = T * atan[0.151977(RH% + 8.313659)1/2 ] + atan(T + RH%) - atan(RH% - 1.676331)
++ 0.00391838(RH%)3/2 atan(0.023101RH%) - 4.686035
+
+Where temperatures are degrees C.
+

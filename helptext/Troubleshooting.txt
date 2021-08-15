@@ -1,0 +1,12 @@
+Troubleshooting:
+
+The basic indication that something is wrong is looking at the command window that launched the application.  Any unhandled exceptions will print here.  
+
+Expected issues will print in the log file located in the same directory where the jar file is located.  This file contains issues that are expected.
+
+The main issues that will cause trouble are related to the communications protocol with the console.  The main window contains a telltale that shows when and what command is running.  The "LOOP" command runs once every 5 seconds.  This data is used to update the main window which displays the current values.  The "DMPAFT" command runs once every 5 minutes and receives data that is written to the database files for future graphing.  The "HILOW" command retrieves hi/low values that also feeds the main window.  This command runs whenever the current reading's hi/low span is changed.  There are other miscellaneous commands such as "TEST", "RXCHECK", etc.
+
+The LOOP and DMPAFT commands can be turned on/off using the main menu's Test -> Loop Data and Test -> DMP Data features.  
+
+Details of the communications protocol can be captured by turning on the main menu's Test -> Capture Data.  This creates a file named debug.txt in the tmp directory.  Raw data being send and received from the console are captured along with the general flow of the serial driver. 
+

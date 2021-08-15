@@ -1,0 +1,3 @@
+Main Menu -> Color:
+
+The main menu contains a Color menu item that consists of a selection for each graphable variable including the background color.  Each sub-menu item is colored based on the current color setting.  Selecting any of the color sub-menu items brings up the default Java color picker for the selected item.  A new color can be selected.  The new value is saved in the config.properties file.  

@@ -1,0 +1,17 @@
+Main Menu -> Test: 
+
+The Test option of the main menu contains sub-menu options related to testing the system.  The sub-menu options are listed below along with their function.
+
+Console Test:  Sends a simple test command to the Davis console.  "TEST" is returned.
+
+Console Diags:  Gets diagnostics from the Davis console.
+
+PI Temp:  Gets and displays various data from the Raspberry PI.
+
+Loop Data:  Turns on/off the periodic loop data, used to update the main screen.
+
+Dump Data:  Turns on/off the periodic dump data, saved as historic data.
+
+Hi/Low Data: Turns on/off the periodic hi/low data, used to update the main screen.
+
+Capture Data:  Sets the logging of the data exchange with the Davis console.  This can either be turned off or set to coarse, medium or fine.

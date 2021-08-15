@@ -1,0 +1,13 @@
+Main Menu -> Config:
+
+The Config option of the main menu contains sub-menu options that configure the system, especially the console.  The console can also be configured directly.  These are more of a convenience.  The sub-menu options are listed below along with their function.
+
+Alarms: Sets alarm values on the Davis console.
+
+Station: Unimplemented: Configures the stations connected to the Davis console.
+
+Tranceivers: Unimplemented: 
+
+Comm: Unimplemented: Configures the communications to the Davis console.
+
+Wx Underground: Unimplemented: Configures the interface to the Wx Underground web site.

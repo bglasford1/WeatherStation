@@ -1,0 +1,13 @@
+Graph Window:
+
+The Graph Window is used to graph both raw data and calculated data.  The color of the lines is modified using the main menu's Color sub-menu.  
+
+The data being plotted is modified using the Add/Remove menu item.  Each graphable item contains a checkbox.  
+
+Click on the y-axis label to change the y-axis values.  A pop-up menu is displayed to select a new y-axis. 
+
+The x-axis time span is modified by selecting this window's Graph -> Date/Duration menu item.  A date picker dialog box is displayed.  Use the "..." Button to bring up a date picker dialog box.  Below the end date is a time span selector.  The selections are 1/2 day, day, 1/2 week, week, 1/2 month, month and year.  Selecting the year takes a while to read and calculate all the data.  
+
+The calculated values are: Wind Chill, Heat DD, Cool DD, Dew Point, Heat Index, THW, THSW, ET, and Wind Run.
+
+The current graph can be saved and brought up upon subsequent graph window display.  This is accomplished by using the menu's Graph -> Make Default.  

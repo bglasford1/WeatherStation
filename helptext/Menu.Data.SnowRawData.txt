@@ -1,0 +1,7 @@
+Main Menu -> Data -> Snow Raw Data:
+
+The Data main menu item contains the Snow Raw Data sub-menu item.  Upon selection, a window is displayed that contains the raw snow data.  The Davis weather station does not measure snow amounts.  This data is hand measured and input into this table by hand.
+
+To add a new measurement, click on any row of the table, right click and a pop-up menu is displayed.  Select Add to add a row.  The date (day, month & year) are input along with the measured value in inches.  A virtual keyboard is used to modify data.  Click in the field to change and the keyboard is displayed.  
+
+To delete a row, click on the row to delete to highlight the row.  Right click on the row to bring up the pop-up menu and select delete.  A confirmation dialog box asks to verify the delete.

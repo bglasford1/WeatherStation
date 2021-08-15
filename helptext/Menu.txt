@@ -1,0 +1,4 @@
+Main Menu:
+
+The main menu is contained at the top of the main window which displays the current readings.  All other functionality is accessed by using the main menu.  The main menu consists of the following menu items: File, Config, Data, Reports, High/Low, Color, Test and Help.
+

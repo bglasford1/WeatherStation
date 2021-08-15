@@ -1,0 +1,23 @@
+Main Menu -> Data:
+
+The Data item of the main menu contains sub-menu options related to the data of the system.  The sub-menu options are listed below along with their function.
+
+Stream Data:  Launches a window to view streaming live data.
+
+Graph Data:  Launches a window to graphically view all historic data.
+
+Modify Data: Launches a window to view the historic data.
+
+Snow Graph:  Launches a window to graphically view the historic snow data.
+
+Snow Data:  Launches a window to view the historic snow data.
+
+Snow Raw Data: Launches a window to view and add/edit the historic snow data.
+
+Rain Graph:  Launches a window to graphically view the historic rain data.
+
+Rain Data:  Launches a window to view the historic rain data.
+
+Export Rain Data:  Exports the rain data to a spreadsheet.
+
+Dump Data:  Dump the most recent data from the Davis console.

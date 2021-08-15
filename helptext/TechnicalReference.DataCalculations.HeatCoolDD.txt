@@ -1,0 +1,8 @@
+Heating and Cooling Degree Days:
+
+These values are basically how much and for how long the temperature has been above or below a value of 65 degrees F.  The value of 65 is chosen because this is a value where a building does not need to be either heated or cooled.  
+
+Heating DD subtracts the outside temperature from 65 to get a temperature component.  Cooling DD subtracts 65 from the outside temperature.  These values are divided by 288 which is the fraction of a day in which the reading was valid; i.e.  60 minutes per hour / 5 minutes = 12 hours * 24 hours per day = 288.  This value should be parameterized to work with an archive interval other than 5 minutes.
+
+The resulting DD value is then totaled for the day.  IS THIS CORRECT???
+

@@ -1,0 +1,19 @@
+Wind Chill:
+
+The wind chill is the new National Weather Service Wind Chill Temperature (WCT) Index they implemented in 2001.  The formula is as follows:
+
+Specifically, the new WCT Index:
+
+uses calculated wind speeds at an average height of five feet (typical height of a human face) based on readings from the national standard height of 33 feet (typical height of an anemometer);
+
+is based on the latest heat transfer theory, i.e, .heat loss from the body to its surroundings, during cold and breezy/windy days;
+
+and uses a standard factor for skin tissue and assumes a no sunlight scenario.
+
+Twc= 35.74 + 0.6215T - 35.75(V0.16) + 0.4275T(V0.16)
+
+where
+
+V = Wind Speed in mph
+T = Air Temperature in deg. F
+Twc= windchill 

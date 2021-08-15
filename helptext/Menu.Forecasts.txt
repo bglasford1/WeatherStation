@@ -1,0 +1,7 @@
+Main Menu -> Forecasts:
+
+The Forecasts option of the main menu contains sub-menu options that display NOAA forecast data.  The sub-menu options are listed below along with their function.
+
+Daily Forecasts:  Generates a table of daily forecasts, day and night, for seven days.
+
+Hourly Forecasts: Generates a table of hourly forecasts for seven days.

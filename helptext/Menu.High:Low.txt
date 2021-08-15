@@ -1,0 +1,3 @@
+Main Menu -> High/Low:
+
+The main menu contains a High/Low menu item.  Selecting the High/Low menu item brings up a list of radio buttons used to select the data span for the high/low values of the readings displayed on the main screen.  The options are hour, day, month and year.  Hour only applies to the wind direction.  If hour is selected, everything other than the wind direction is set to day.  

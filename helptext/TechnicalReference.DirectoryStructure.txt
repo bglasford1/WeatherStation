@@ -1,0 +1,14 @@
+Directory Structure:
+
+The directory contains sub-folders containing files specific to the execution of the program.  The following are the sub-folders and their contents.
+
+/helptext:  This folder contains the help text files.  Modifying these files modifies the help text that is displayed.
+
+/moonicons: This folder contains the .png images of the 30 day phases of the moon.
+
+/reports: This folder is where the reports are written.  When any report is generated, the report is both displayed and written to this folder.  The rain spreadsheet is also written here.
+
+/wxicons: This folder contains the weather icons that relate to the forecast weather conditions.
+
+/tmp: This folder contains the debug and log files.
+

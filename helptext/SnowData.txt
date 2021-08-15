@@ -1,0 +1,7 @@
+Snow Data:
+
+Snow data is not recorded by Davis instrumentation.  This data is hand measured and input into the snow data table by accessing the main menu -> Data -> Snow Raw Data.
+
+The snow data is simple comma separated values (CSV) format.  There will be one file for all data. There are four columns; year, month, day and value.  The value is in tenths of an inch of snow.
+
+

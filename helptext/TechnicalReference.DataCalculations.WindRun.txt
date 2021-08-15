@@ -1,0 +1,3 @@
+Wind Run:
+
+The wind run is a total amount of wind that passes the wether station in a given day.  The units are miles of wind.  The wind speed in miles per hour for a given archive interval, in this case 5 minutes, is multiplied 5 minutes and then divided by 60 minutes to give the miles of wind that passed for the 5 minute interval.  

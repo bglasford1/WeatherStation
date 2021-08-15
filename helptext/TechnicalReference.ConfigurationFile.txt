@@ -1,0 +1,8 @@
+Configuration File:
+
+The configuration file is named config.properties and is automatically generated when the program first runs.  
+
+A default property file is contained in the jar file.  If a new version of the program is loaded and new properties are in the default property file, sometimes the config.properties file needs to be deleted first so a new one can be written.
+
+The configuration file contains configuration parameters that configures the program.  Many of the parameters configure the charts and graphs.  When a chart or graph is modified and saved as default, the parameters are written back to this file.  Some of the main parameters such as latitude and longitude can be modified using the program.  
+

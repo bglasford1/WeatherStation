@@ -1,0 +1,6 @@
+Data Calculations:
+
+There are various data that is calculated versus observed.  These calculations use the latest equations based on actual sensor observations.  The calculated data includes: Dew Point, Wind Chill, Heat Index, Evapotranspiration, THW, THSW, Heat DD, Cool DD and Wind Run.
+
+The sub-items of this help index describe the formulas used for each calculations.
+

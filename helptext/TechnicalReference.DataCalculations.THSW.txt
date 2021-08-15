@@ -1,0 +1,8 @@
+Temperature-Humidity-Sun-Wind Index:
+
+The THW and THSW indexes are based on formulas by R. G. Steadman in a paper named "The Assessment of Sultriness" parts I and II published in 11 April 1979.  
+
+Simple air temperature does not completely describe what it feels like outside.  When it is hot out, humidity makes it feel hotter.  Adding a humidity factor gives a heat index value.  When it is cold out, wind makes it feel colder.  Adding wind gives a wind chill value.  The THW index incorporates both humidity and wind.  THSW adds a solar radiation element to the simpler THW index to give a more correct value, especially in dry, hot conditions.  
+
+The equations are too complex to describe here.  Refer to the papers for a more complete explanation.
+

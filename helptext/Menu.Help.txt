@@ -1,0 +1,10 @@
+Main Menu -> Help:
+
+The Help option of the main menu contains sub-menu help related options.  The sub-menu options are listed below along with their functions. 
+
+About:  Launches a dialog describing this program at a high level, including the version.
+
+Console Version:  Displays the software version running on the console.
+
+Help Index:  Launches this help window.
+

@@ -1,0 +1,3 @@
+Main Menu -> Data -> Export Rain Data:
+
+The Data main menu item contains the Export Rain Data sub-menu item.  Upon selection, the rain data is saved to a comma separated file in the reports folder.  The file is named RainData.csv.  

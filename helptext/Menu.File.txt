@@ -1,0 +1,11 @@
+Main Menu -> File:
+
+The File option of the main menu contains sub-menu options traditionally contained under a File menu option.  The sub-menu options are listed below along with their function.
+
+Reset Port:  Resets the connection to the Davis console.
+
+Console Light:  Toggles on/off the light on the Davis console.
+
+Console Time:  Displays the date & time on the Davis console.
+
+Exit:  Exits the application.

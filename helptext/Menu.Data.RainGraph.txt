@@ -1,0 +1,3 @@
+Main Menu -> Data -> Rain Graph:
+
+The Data main menu item contains the Rain Graph sub-menu item.  Upon selection, a rain graph is displayed.  The rain graph displays the data by year as either yearly totals or by month.  This window's menu contains an Interval menu item used to switch between the two views.  
