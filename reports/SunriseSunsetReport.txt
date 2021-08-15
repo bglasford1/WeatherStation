@@ -1,0 +1,7 @@
+
+        Sunrise/Sunset Times Report
+        ----------------------------
+
+    Date       Astro   Naut    Civil  Sunrise  Sunset  Civil   Naut    Astro   Light Hrs
+  ----------   -----   -----   -----   -----   -----   -----   -----   -----   -----
+  02/13/2021    5:23 am    5:54 am    6:25 am    6:52 am    5:35 pm    6:02 pm    6:33 pm    7:04 pm   10.71
