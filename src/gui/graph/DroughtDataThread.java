@@ -29,6 +29,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 import util.ConfigProperties;
+import util.Logger;
 
 import java.awt.*;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class DroughtDataThread
   private static final ConfigProperties PROPS = ConfigProperties.instance();
   private final DatabaseReader dbReader = DatabaseReader.getInstance();
   private DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+  private final Logger logger = Logger.getInstance();
 
   private float droughtTotal = 0;
   private final float[] myAverageRainValues= new float[]
@@ -117,7 +119,7 @@ public class DroughtDataThread
     }
     catch (IOException e)
     {
-      System.out.println("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
+      logger.logData("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
       return;
     }
 
@@ -148,7 +150,7 @@ public class DroughtDataThread
         }
         catch (IOException e)
         {
-          System.out.println("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
+          logger.logData("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
           return;
         }
 
@@ -192,7 +194,6 @@ public class DroughtDataThread
     }
     droughtTotal = droughtTotal + monthValue - myAverageRainValues[month];
 
-    System.out.println("Date: " + year + "-" + month + ", amt: " + monthValue + ", drought: " + droughtTotal);
     dataset.addValue(monthValue, "Rain Amount", String.valueOf(year) + "-" + String.valueOf(month));
     dataset.addValue(droughtTotal, "Drought Total", String.valueOf(year) + "-" + String.valueOf(month));
   }
