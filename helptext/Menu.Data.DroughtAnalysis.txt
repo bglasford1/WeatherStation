@@ -1,0 +1,6 @@
+Main Menu -> Data -> Drought Analysis:
+
+The Data main menu item contains the Drought Analysis sub-menu item.  Upon selection, a data input dialog box is displayed which is used to select the data to analyse.  The data is analyzed by month.  A starting month/year along with a duration in months is input.
+
+The data is displayed as a bar chart by month/year.  The drought total starts with zero and uses the median values by month that I have recorded to date.
+

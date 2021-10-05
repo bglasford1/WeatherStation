@@ -8,6 +8,8 @@ Graph Data:  Launches a window to graphically view all historic data.
 
 Modify Data: Launches a window to view the historic data.
 
+Drought Data: Launches a window to view drought analysis data.
+
 Snow Graph:  Launches a window to graphically view the historic snow data.
 
 Snow Data:  Launches a window to view the historic snow data.
