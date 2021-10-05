@@ -12,6 +12,7 @@
             GUI class heirarchy.
 
   Mods:		  09/01/21 Initial Release.
+            10/05/21 Added drought analysis.
 */
 package gui;
 
@@ -59,6 +60,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private static final String STREAM_STRING        = "Stream Data";
   private static final String GRAPH_STRING         = "Graph Data";
   private static final String MODIFY_STRING        = "Modify Data";
+  private static final String DROUGHT_STRING       = "Drought Analysis";
   private static final String SNOW_GRAPH_STRING    = "Snow Graph";
   private static final String SNOW_DATA_STRING     = "Snow Data";
   private static final String SNOW_RAW_DATA_STRING = "Snow Raw Data";
@@ -133,6 +135,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private HelpIndexWindow helpIndexWindow = null;
   private PiDiagsDialog piDiagsDialog = null;
   private DateInputDialog dateInputDialog = null;
+  private DroughtInputDialog droughtInputDialog = null;
   private HrsOfSunshineDialog hrsOfSunshineDialog = null;
   private SunriseSunsetDialog sunriseSunsetDialog = null;
   private NoaaMonthlyDialog noaaMonthlyDialog = null;
@@ -146,6 +149,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private final CurrentReadings currentReadings;
   private final CommandControl commandControl;
   private GraphWindow graphWindow = null;
+  private DroughtWindow droughtWindow = null;
   private StreamWindow streamWindow = null;
   private SnowGraphWindow snowGraphWindow = null;
   private RainGraphWindow rainGraphWindow = null;
@@ -206,6 +210,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     JMenuItem streamItem = createMenuItem(STREAM_STRING, null);
     JMenuItem graphItem = createMenuItem(GRAPH_STRING, null);
     JMenuItem modifyItem = createMenuItem(MODIFY_STRING, null);
+    JMenuItem droughtItem = createMenuItem(DROUGHT_STRING, null);
     JMenuItem snowGraphItem = createMenuItem(SNOW_GRAPH_STRING, null);
     JMenuItem snowDataItem = createMenuItem(SNOW_DATA_STRING, null);
     JMenuItem snowRawDataItem = createMenuItem(SNOW_RAW_DATA_STRING, null);
@@ -217,6 +222,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     dataMenu.add(streamItem);
     dataMenu.add(graphItem);
     dataMenu.add(modifyItem);
+    dataMenu.add(droughtItem);
     dataMenu.add(new JSeparator());
     dataMenu.add(snowGraphItem);
     dataMenu.add(snowDataItem);
@@ -451,7 +457,34 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     {
       JOptionPane.showMessageDialog(this,
                                     "File " + databaseReader.getFilename(dateInputDialog.getYear(),
-                                                                         dateInputDialog.getMonth()) + " does not exist.");
+                                                                         dateInputDialog.getMonth()) +
+                                    " does not exist.");
+    }
+  }
+
+  /*
+   * Method called by the DroughtInputDialog box when the OK button is pressed.
+   */
+  public void processDroughtInput()
+  {
+    if (databaseReader.fileExists(droughtInputDialog.getYear(), droughtInputDialog.getMonth()))
+    {
+      // Create the table and display.
+      if (droughtWindow == null)
+      {
+        droughtWindow = new DroughtWindow();
+      }
+      droughtWindow.populateDataSet(droughtInputDialog.getYear(),
+                                    droughtInputDialog.getMonth(),
+                                    droughtInputDialog.getDuration());
+      droughtWindow.setVisible(true);
+    }
+    else
+    {
+      JOptionPane.showMessageDialog(this,
+                                    "File " + databaseReader.getFilename(droughtInputDialog.getYear(),
+                                                                         droughtInputDialog.getMonth()) +
+                                    " does not exist.");
     }
   }
 
@@ -600,6 +633,15 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         dateInputDialog = new DateInputDialog(this);
       else
         dateInputDialog.setVisible(true);
+    }
+
+    else if (action.equalsIgnoreCase(DROUGHT_STRING))
+    {
+      // Display a dialog box to get the month and year.
+      if (droughtInputDialog == null)
+        droughtInputDialog = new DroughtInputDialog(this);
+      else
+        droughtInputDialog.setVisible(true);
     }
 
     else if (action.equalsIgnoreCase(STREAM_STRING))
