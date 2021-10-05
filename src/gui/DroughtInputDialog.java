@@ -18,7 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
 import java.time.Year;
 
 public class DroughtInputDialog extends JDialog implements ActionListener
@@ -37,7 +36,7 @@ public class DroughtInputDialog extends JDialog implements ActionListener
    */
   DroughtInputDialog(MainWindow parent)
   {
-    super(parent, "Date Input Dialog Box", false);
+    super(parent, "Drought Input Dialog Box", false);
     this.parent = parent;
 
     JLabel monthLabel = new JLabel("Month:  ", JLabel.CENTER);
