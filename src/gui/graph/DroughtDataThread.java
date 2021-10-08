@@ -10,7 +10,8 @@
   Purpose:	This thread graphs the drought data, showing the accumulated
             monthly deviation of rainfall amounts from the historic average.
 
-  Mods:		  10/05/21 Initial Release.
+  Mods:		  10/05/21  Initial Release.
+            10/07/21  Added progress bar.
 */
 package gui.graph;
 
@@ -31,36 +32,40 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import util.ConfigProperties;
 import util.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDate;
 
-public class DroughtDataThread
+public class DroughtDataThread extends SwingWorker<Void, Void>
 {
   private JFreeChart barChart = null;
   private static final ConfigProperties PROPS = ConfigProperties.instance();
   private final DatabaseReader dbReader = DatabaseReader.getInstance();
   private DefaultCategoryDataset dataset = new DefaultCategoryDataset();
   private final Logger logger = Logger.getInstance();
+  private ProgressMonitor progressMonitor;
 
+  private int startYear;
+  private int startMonth;
+  private int duration;
+  private double progress;
   private float droughtTotal = 0;
   private final float[] myAverageRainValues= new float[]
     { 0.00f, 0.06f, 0.12f, 0.55f, 1.10f, 1.70f, 1.36f, 2.76f, 2.03f, 0.86f, 0.31f, 0.14f, 0.10f};
 
-  private static class SingletonHelper
+  DroughtDataThread(ProgressMonitor progressMonitor, int year, int month, int duration)
   {
-    private static final DroughtDataThread INSTANCE = new DroughtDataThread();
-  }
-
-  public static DroughtDataThread getInstance()
-  {
-    return DroughtDataThread.SingletonHelper.INSTANCE;
+    startYear = year;
+    startMonth = month;
+    this.duration = duration;
+    this.progressMonitor = progressMonitor;
   }
 
   /**
    * Method to initialize this singleton.  This method must be called before any other methods are called.
    */
-  public void initializeChart()
+  private void initializeChart()
   {
     //Create chart
     barChart= ChartFactory.createBarChart(
@@ -93,12 +98,34 @@ public class DroughtDataThread
     plot.setDomainGridlinePaint(Color.BLACK);
   }
 
-  public ChartPanel getChart()
+  /**
+   * Method to create the bar chart.
+   *
+   * @return The chart panel to display.
+   */
+  public ChartPanel createChart()
   {
+    initializeChart();
     return new ChartPanel(barChart);
   }
 
-  public void populateDataset(int startYear, int startMonth, int duration)
+  /**
+   * Method called when the background task is complete.
+   */
+  @Override
+  public void done()
+  {
+    progressMonitor.close();
+  }
+
+  /**
+   * Method called to start the background task.  This task reads the data from the database files and
+   * places the pertinent data into the dataset for the bar chart to display.
+   *
+   * @return null
+   */
+  @Override
+  public Void doInBackground()
   {
     droughtTotal = 0;
     dataset.clear();
@@ -120,7 +147,7 @@ public class DroughtDataThread
     catch (IOException e)
     {
       logger.logData("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
-      return;
+      return null;
     }
 
     if (startYear == endYear && startMonth == endMonth)
@@ -151,7 +178,7 @@ public class DroughtDataThread
         catch (IOException e)
         {
           logger.logData("Graph Data: populateDataset: Unable to get data: " + e.getLocalizedMessage());
-          return;
+          return null;
         }
 
         if (startYear == endYear && startMonth == endMonth)
@@ -170,10 +197,21 @@ public class DroughtDataThread
             startMonth = 1;
           }
         }
+        progress = progress + 100/duration;
+        setProgress((int)progress);
       }
+      setProgress(100);
     }
+    return null;
   }
 
+  /**
+   * Internal method to extract the data, calculate the drought total and place the data into the dataset.
+   * This method processes the monthly data in the file defined by the month and year values.
+   *
+   * @param year  The year of the data.
+   * @param month The month of the data.
+   */
   private void processMonthsRain(int year, int month)
   {
     float monthValue = 0;
