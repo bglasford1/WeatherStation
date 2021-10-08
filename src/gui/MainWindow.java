@@ -13,6 +13,7 @@
 
   Mods:		  09/01/21 Initial Release.
             10/05/21 Added drought analysis.
+            10/07/21 Added progress bar.
 */
 package gui;
 
@@ -149,7 +150,6 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private final CurrentReadings currentReadings;
   private final CommandControl commandControl;
   private GraphWindow graphWindow = null;
-  private DroughtWindow droughtWindow = null;
   private StreamWindow streamWindow = null;
   private SnowGraphWindow snowGraphWindow = null;
   private RainGraphWindow rainGraphWindow = null;
@@ -469,15 +469,10 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   {
     if (databaseReader.fileExists(droughtInputDialog.getYear(), droughtInputDialog.getMonth()))
     {
-      // Create the table and display.
-      if (droughtWindow == null)
-      {
-        droughtWindow = new DroughtWindow();
-      }
-      droughtWindow.populateDataSet(droughtInputDialog.getYear(),
-                                    droughtInputDialog.getMonth(),
-                                    droughtInputDialog.getDuration());
-      droughtWindow.setVisible(true);
+      // Create the chart and display.
+      DroughtWindow droughtWindow = new DroughtWindow(droughtInputDialog.getYear(),
+                                                      droughtInputDialog.getMonth(),
+                                                      droughtInputDialog.getDuration());
     }
     else
     {
