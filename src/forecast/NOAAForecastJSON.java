@@ -10,20 +10,28 @@
   Purpose:	Class that gets the NOAA Alert Forecasts.  The alerts are returned
             in a JSON format.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/11/21  Changed hourly data to tabular format.
 */
 package forecast;
 
+import data.dbrecord.WindDirection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class NOAAForecastJSON
 {
+  private final Logger logger = Logger.getInstance();
+  private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
+
   // The severity of NOAA alerts.
   public enum Severity
   {
@@ -43,21 +51,25 @@ public class NOAAForecastJSON
   private String getJSON(String urlString)
   {
     StringBuilder jsonString = new StringBuilder();
-    try
+    for (int trys = 0; trys < 3; trys++)
     {
-      URL url = new URL(urlString);
+      try
+      {
+        URL url = new URL(urlString);
 
-      // read from the URL
-      Scanner scan = new Scanner(url.openStream());
-      while (scan.hasNext())
-        jsonString.append(scan.nextLine());
-      scan.close();
+        // read from the URL
+        Scanner scan = new Scanner(url.openStream());
+        while (scan.hasNext())
+          jsonString.append(scan.nextLine());
+        scan.close();
+        return jsonString.toString();
+      }
+      catch (IOException ioe)
+      {
+        logger.logData("Unable to get NOAA Forecast, try # " + trys + ioe.getMessage());
+      }
     }
-    catch (IOException ioe)
-    {
-      ioe.printStackTrace();
-    }
-    return jsonString.toString();
+    return null;
   }
 
   /**
@@ -70,6 +82,8 @@ public class NOAAForecastJSON
     try
     {
       String jsonString = getJSON("https://api.weather.gov/alerts/active/zone/COZ084");
+      if (jsonString == null)
+        return Severity.Unknown;
 
       JSONObject obj = new JSONObject(jsonString);
       JSONArray featuresArray = obj.getJSONArray("features");
@@ -98,6 +112,8 @@ public class NOAAForecastJSON
   public String getAlert()
   {
     String jsonString = getJSON("https://api.weather.gov/alerts/active/zone/COZ084");
+    if (jsonString == null)
+      return "Alert unavailable...";
 
     JSONObject obj = new JSONObject(jsonString);
     JSONArray featuresArray = obj.getJSONArray("features");
@@ -156,10 +172,14 @@ public class NOAAForecastJSON
   {
     String dailyForecastURL = "https://api.weather.gov/zones/public/COZ084/forecast";
     String jsonString = getJSON(dailyForecastURL);
+    if (jsonString == null)
+      return "Forecast unavailable...";
+
     JSONObject json = new JSONObject(jsonString);
 
     StringBuilder builder = new StringBuilder();
-    JSONArray periodsArray = json.getJSONArray("periods");
+    JSONObject properties = json.getJSONObject("properties");
+    JSONArray periodsArray = properties.getJSONArray("periods");
     for (int i = 0; i < periodsArray.length(); i++)
     {
       String name = periodsArray.getJSONObject(i).getString("name");
@@ -171,33 +191,47 @@ public class NOAAForecastJSON
   }
 
   /**
-   * Method to get the hourly forecasts.
+   * Method to get the hourly forecasts as Java records.
    *
-   * @return The hourly forecasts.
+   * @return The hourly forecast data.
    */
-  public String getHourlyForecast()
+  public String[][] getHourlyForecasts()
   {
     String hourlyForecastURL = "https://api.weather.gov/gridpoints/PUB/92,97/forecast/hourly";
     String jsonString = getJSON(hourlyForecastURL);
+    if (jsonString == null)
+      return null;
+
     JSONObject json = new JSONObject(jsonString);
 
-    StringBuilder builder = new StringBuilder();
     JSONObject properties = json.getJSONObject("properties");
     JSONArray periodsArray = properties.getJSONArray("periods");
+    String[][] hourlyData = new String[periodsArray.length()][5];
     for (int i = 0; i < periodsArray.length(); i++)
     {
       String time = periodsArray.getJSONObject(i).getString("startTime");
-      builder.append("Time: ").append(time.substring(0, 10)).append(":").append(time.substring(11, 13));
+      time = time.replace('T', ' ');
+      time = time.substring(0, 13);
+      LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+      String date = dateTime.getMonthValue() + "/" + dateTime.getDayOfMonth() + "/" + dateTime.getYear() +
+                    ":" + dateTime.getHour();
+      hourlyData[i][0] = date;
+
       Number temperature = periodsArray.getJSONObject(i).getNumber("temperature");
-      builder.append(" Temp: ").append(temperature);
-      String windSpeed = periodsArray.getJSONObject(i).getString("windSpeed");
-      builder.append(" Wind Speed: ").append(windSpeed);
-      String windDir = periodsArray.getJSONObject(i).getString("windDirection");
-      builder.append(" Wind Dir: ").append(windDir);
+      hourlyData[i][1] = temperature.toString();
+
       String shortForecast = periodsArray.getJSONObject(i).getString("shortForecast");
-      builder.append(" Forecast: ").append(shortForecast).append("\n");
+      shortForecast = shortForecast.replace(" ", "");
+      hourlyData[i][2] = NOAAForecast.valueOf(shortForecast).toString();
+
+      String windSpeed = periodsArray.getJSONObject(i).getString("windSpeed");
+      String[] parsedValues = windSpeed.split("\\s+");
+      hourlyData[i][3] = parsedValues[0];
+
+      String windDir = periodsArray.getJSONObject(i).getString("windDirection");
+      hourlyData[i][4] = WindDirection.valueOf(windDir).toString();
     }
-    return builder.toString();
+    return hourlyData;
   }
 
   public static void main(String[] args)
@@ -205,9 +239,6 @@ public class NOAAForecastJSON
     NOAAForecastJSON noaaForecastJSON = new NOAAForecastJSON();
 
     System.out.println(noaaForecastJSON.getDailyForecast());
-    System.out.println("---------------------------------------");
-
-    System.out.println(noaaForecastJSON.getHourlyForecast());
     System.out.println("---------------------------------------");
 
     String alert = noaaForecastJSON.getAlert();
