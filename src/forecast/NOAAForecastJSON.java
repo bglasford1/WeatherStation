@@ -164,22 +164,23 @@ public class NOAAForecastJSON
   }
 
   /**
-   * Method to get the daily forecasts.
+   * Method to get the daily forecasts by day as a double array.
    *
    * @return The daily forecasts.
    */
-  public String getDailyForecast()
+  public String[][] getDailyForecast()
   {
     String dailyForecastURL = "https://api.weather.gov/zones/public/COZ084/forecast";
     String jsonString = getJSON(dailyForecastURL);
     if (jsonString == null)
-      return "Forecast unavailable...";
+      return null;
 
     JSONObject json = new JSONObject(jsonString);
 
     StringBuilder builder = new StringBuilder();
     JSONObject properties = json.getJSONObject("properties");
     JSONArray periodsArray = properties.getJSONArray("periods");
+    String[][] dailyData = new String[periodsArray.length()][6];
     for (int i = 0; i < periodsArray.length(); i++)
     {
       String name = periodsArray.getJSONObject(i).getString("name");
@@ -187,11 +188,11 @@ public class NOAAForecastJSON
       String detailedForecast = periodsArray.getJSONObject(i).getString("detailedForecast");
       builder.append(detailedForecast).append("\n");
     }
-    return builder.toString();
+    return dailyData;
   }
 
   /**
-   * Method to get the hourly forecasts as Java records.
+   * Method to get the hourly forecasts as a double array.
    *
    * @return The hourly forecast data.
    */
@@ -232,16 +233,5 @@ public class NOAAForecastJSON
       hourlyData[i][4] = WindDirection.valueOf(windDir).toString();
     }
     return hourlyData;
-  }
-
-  public static void main(String[] args)
-  {
-    NOAAForecastJSON noaaForecastJSON = new NOAAForecastJSON();
-
-    System.out.println(noaaForecastJSON.getDailyForecast());
-    System.out.println("---------------------------------------");
-
-    String alert = noaaForecastJSON.getAlert();
-    System.out.println(alert);
   }
 }
