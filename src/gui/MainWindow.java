@@ -11,9 +11,11 @@
             class creates the menu bar and creates all major objects in the
             GUI class heirarchy.
 
-  Mods:		  09/01/21 Initial Release.
-            10/05/21 Added drought analysis.
-            10/07/21 Added progress bar.
+  Mods:		  09/01/21  Initial Release.
+            10/05/21  Added drought analysis.
+            10/07/21  Added progress bar.
+            10/09/21  Changed to PWS Weather.
+            10/11/21  Changed hourly forecast data to table.
 */
 package gui;
 
@@ -55,7 +57,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private final static String STATION_STRING       = "Station";
   private final static String TRANSCEIVERS_STRING  = "Transceivers";
   private final static String COMM_STRING          = "Comm";
-  private final static String WXUNDERGROUND_STRING = "WX Underground";
+  private final static String WXUNDERGROUND_STRING = "PWS Weather";
 
   // DATA sub-menu items.
   private static final String STREAM_STRING        = "Stream Data";
@@ -749,15 +751,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
 
     else if (action.equalsIgnoreCase(HOURLY_FORECAST_STRING))
     {
-      if (hourlyForecastDialog == null)
-      {
-        hourlyForecastDialog = new HourlyForecastDialog(this);
-      }
-      else
-      {
-        hourlyForecastDialog.updateForecast();
-        hourlyForecastDialog.setVisible(true);
-      }
+      hourlyForecastDialog = new HourlyForecastDialog(this);
     }
 
     else if (action.equalsIgnoreCase(GraphDefs.HOUR_STRING))

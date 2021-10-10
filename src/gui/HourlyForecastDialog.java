@@ -9,7 +9,8 @@
 
   Purpose:	This class is responsible for drawing the Hourly Forecast Dialog box.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/11/21  Changed hourly data to tabular form.
 */
 package gui;
 
@@ -22,8 +23,6 @@ import java.awt.event.ActionListener;
 
 public class HourlyForecastDialog extends JDialog implements ActionListener
 {
-  private JTextArea textArea = new JTextArea();
-
   /**
    * Constructor that draws the initial dialog box.
    */
@@ -34,17 +33,16 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
     this.getContentPane().setLayout(new BorderLayout());
 
     NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
-    String hourlyText = noaaForecast.getHourlyForecast();
+    String[][] data = noaaForecast.getHourlyForecasts();
 
-    JPanel aboutPanel = new JPanel();
+    JPanel dataPanel = new JPanel();
 
-    textArea.setEditable(false);
-    textArea.append(hourlyText);
-    textArea.setCaretPosition(0);
+    String column[]={"Date", "Temp", "Forecast", "Wind Speed", "Wind Dir."};
+    JTable table = new JTable(data, column);
 
-    JScrollPane scrollPane = new JScrollPane(textArea);
+    JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    aboutPanel.add(scrollPane);
+    dataPanel.add(scrollPane);
     this.getContentPane().add(scrollPane);
 
     JPanel buttonPanel = new JPanel();
@@ -58,15 +56,6 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
 
     setSize(800, 500);
     setVisible(true);
-  }
-
-  /**
-   * Call to update the forecast data.
-   */
-  public void updateForecast()
-  {
-    NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
-    textArea.setText(noaaForecast.getHourlyForecast());
   }
 
   /**
