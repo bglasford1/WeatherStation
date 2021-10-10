@@ -15,6 +15,7 @@
 package gui;
 
 import forecast.NOAAForecastJSON;
+import util.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,8 @@ import java.awt.event.ActionListener;
 
 public class HourlyForecastDialog extends JDialog implements ActionListener
 {
+  private final Logger logger = Logger.getInstance();
+
   /**
    * Constructor that draws the initial dialog box.
    */
@@ -34,6 +37,11 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
 
     NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
     String[][] data = noaaForecast.getHourlyForecasts();
+    if (data == null)
+    {
+      logger.logData("NOAA returned no data...");
+      return;
+    }
 
     JPanel dataPanel = new JPanel();
 
