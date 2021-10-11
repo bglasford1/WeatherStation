@@ -164,23 +164,22 @@ public class NOAAForecastJSON
   }
 
   /**
-   * Method to get the daily forecasts by day as a double array.
+   * Method to get the daily forecasts as strings.
    *
    * @return The daily forecasts.
    */
-  public String[][] getDailyForecast()
+  public String getDailyForecast()
   {
     String dailyForecastURL = "https://api.weather.gov/zones/public/COZ084/forecast";
     String jsonString = getJSON(dailyForecastURL);
     if (jsonString == null)
-      return null;
+      return "Forecast unavailable...";
 
     JSONObject json = new JSONObject(jsonString);
 
     StringBuilder builder = new StringBuilder();
     JSONObject properties = json.getJSONObject("properties");
     JSONArray periodsArray = properties.getJSONArray("periods");
-    String[][] dailyData = new String[periodsArray.length()][6];
     for (int i = 0; i < periodsArray.length(); i++)
     {
       String name = periodsArray.getJSONObject(i).getString("name");
@@ -188,7 +187,7 @@ public class NOAAForecastJSON
       String detailedForecast = periodsArray.getJSONObject(i).getString("detailedForecast");
       builder.append(detailedForecast).append("\n");
     }
-    return dailyData;
+    return builder.toString();
   }
 
   /**
@@ -223,7 +222,7 @@ public class NOAAForecastJSON
 
       String shortForecast = periodsArray.getJSONObject(i).getString("shortForecast");
       shortForecast = shortForecast.replace(" ", "");
-      hourlyData[i][2] = NOAAForecast.valueOf(shortForecast).toString();
+      hourlyData[i][2] = shortForecast;
 
       String windSpeed = periodsArray.getJSONObject(i).getString("windSpeed");
       String[] parsedValues = windSpeed.split("\\s+");
