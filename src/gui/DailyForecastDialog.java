@@ -9,7 +9,8 @@
 
   Purpose:	This class is responsible for drawing the Daily Forecast Dialog box.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/11/21  Tweaked daily forecast.
 */
 package gui;
 
@@ -23,6 +24,7 @@ import java.awt.event.ActionListener;
 public class DailyForecastDialog extends JDialog implements ActionListener
 {
   private JTextArea textArea = new JTextArea();
+  private NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
 
   /**
    * Constructor that draws the initial dialog box.
@@ -30,10 +32,8 @@ public class DailyForecastDialog extends JDialog implements ActionListener
   DailyForecastDialog (JFrame parent)
   {
     super(parent, "Daily Forecast Dialog Box", true);
-
     this.getContentPane().setLayout(new BorderLayout());
 
-    NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
     String dailyText = noaaForecast.getDailyForecast();
 
     JPanel aboutPanel = new JPanel();
@@ -55,7 +55,6 @@ public class DailyForecastDialog extends JDialog implements ActionListener
 
     Font myFont = new Font("MyFont", Font.PLAIN, 12);
     this.setFont(myFont);
-    FontMetrics fm = this.getFontMetrics(this.getFont());
 
     setSize(800, 400);
     setVisible(true);
@@ -66,7 +65,6 @@ public class DailyForecastDialog extends JDialog implements ActionListener
    */
   public void updateForecast()
   {
-    NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
     textArea.setText(noaaForecast.getDailyForecast());
   }
 

@@ -18,6 +18,7 @@ import forecast.NOAAForecastJSON;
 import util.Logger;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,8 @@ import java.awt.event.ActionListener;
 public class HourlyForecastDialog extends JDialog implements ActionListener
 {
   private final Logger logger = Logger.getInstance();
+  private NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
+  private JTable table;
 
   /**
    * Constructor that draws the initial dialog box.
@@ -32,10 +35,8 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
   HourlyForecastDialog (JFrame parent)
   {
     super(parent, "Hourly Forecast Dialog Box", true);
-
     this.getContentPane().setLayout(new BorderLayout());
 
-    NOAAForecastJSON noaaForecast = new NOAAForecastJSON();
     String[][] data = noaaForecast.getHourlyForecasts();
     if (data == null)
     {
@@ -43,11 +44,15 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
       return;
     }
 
-    JPanel dataPanel = new JPanel();
-
     String column[]={"Date", "Temp", "Forecast", "Wind Speed", "Wind Dir."};
-    JTable table = new JTable(data, column);
+    DefaultTableModel tableModel = new DefaultTableModel(column, 0);
+    for (String[] rowData : data)
+    {
+      tableModel.addRow(rowData);
+    }
+    table = new JTable(tableModel);
 
+    JPanel dataPanel = new JPanel();
     JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     dataPanel.add(scrollPane);
@@ -63,6 +68,33 @@ public class HourlyForecastDialog extends JDialog implements ActionListener
     this.setFont(myFont);
 
     setSize(800, 500);
+    setVisible(true);
+  }
+
+  /**
+   * Call to update the forecast data.
+   */
+  public void updateForecast()
+  {
+    String[][] data = noaaForecast.getHourlyForecasts();
+    if (data == null)
+    {
+      logger.logData("NOAA returned no data...");
+      return;
+    }
+
+    DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
+    int rowCount = tableModel.getRowCount();
+    for (int i = rowCount - 1; i >= 0; i--)
+    {
+      tableModel.removeRow(i);
+    }
+
+    for (String[] rowData : data)
+    {
+      tableModel.addRow(rowData);
+    }
+
     setVisible(true);
   }
 

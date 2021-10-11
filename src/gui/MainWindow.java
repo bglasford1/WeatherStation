@@ -751,7 +751,15 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
 
     else if (action.equalsIgnoreCase(HOURLY_FORECAST_STRING))
     {
-      hourlyForecastDialog = new HourlyForecastDialog(this);
+      if (hourlyForecastDialog == null)
+      {
+        hourlyForecastDialog = new HourlyForecastDialog(this);
+      }
+      else
+      {
+        hourlyForecastDialog.updateForecast();
+        hourlyForecastDialog.setVisible(true);
+      }
     }
 
     else if (action.equalsIgnoreCase(GraphDefs.HOUR_STRING))
