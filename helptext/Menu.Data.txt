@@ -10,6 +10,8 @@ Modify Data: Launches a window to view the historic data.
 
 Drought Data: Launches a window to view drought analysis data.
 
+Wind Rose: Launches a window to view wind data as a wind rose.
+
 Snow Graph:  Launches a window to graphically view the historic snow data.
 
 Snow Data:  Launches a window to view the historic snow data.

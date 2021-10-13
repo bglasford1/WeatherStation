@@ -1,0 +1,3 @@
+Main Menu -> Data -> Wind Rose:
+
+The Data main menu item contains the Wind Rose  sub-menu item.  Upon selection, a window is displayed that contains a wind rose diagram.  The time period is defined in the window title.  The "interval" menu item contains a radio-button type checklist to select a new data interval.
