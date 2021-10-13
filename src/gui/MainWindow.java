@@ -16,6 +16,7 @@
             10/07/21  Added progress bar.
             10/09/21  Changed to PWS Weather.
             10/11/21  Changed hourly forecast data to table.
+            10/13/21  Added Wind Rose plot.
 */
 package gui;
 
@@ -29,6 +30,7 @@ import gui.reports.*;
 import gui.snow.SnowDataTable;
 import gui.snow.SnowRawDataTable;
 import gui.snow.SnowGraphWindow;
+import gui.windrose.WindRosePlot;
 import serialdriver.*;
 import util.ConfigProperties;
 import util.Logger;
@@ -64,6 +66,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private static final String GRAPH_STRING         = "Graph Data";
   private static final String MODIFY_STRING        = "Modify Data";
   private static final String DROUGHT_STRING       = "Drought Analysis";
+  private static final String WIND_ROSE_STRING     = "Wind Rose";
   private static final String SNOW_GRAPH_STRING    = "Snow Graph";
   private static final String SNOW_DATA_STRING     = "Snow Data";
   private static final String SNOW_RAW_DATA_STRING = "Snow Raw Data";
@@ -139,6 +142,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   private PiDiagsDialog piDiagsDialog = null;
   private DateInputDialog dateInputDialog = null;
   private DroughtInputDialog droughtInputDialog = null;
+  private WindRosePlot windRosePlot = null;
   private HrsOfSunshineDialog hrsOfSunshineDialog = null;
   private SunriseSunsetDialog sunriseSunsetDialog = null;
   private NoaaMonthlyDialog noaaMonthlyDialog = null;
@@ -213,6 +217,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     JMenuItem graphItem = createMenuItem(GRAPH_STRING, null);
     JMenuItem modifyItem = createMenuItem(MODIFY_STRING, null);
     JMenuItem droughtItem = createMenuItem(DROUGHT_STRING, null);
+    JMenuItem windRoseItem = createMenuItem(WIND_ROSE_STRING, null);
     JMenuItem snowGraphItem = createMenuItem(SNOW_GRAPH_STRING, null);
     JMenuItem snowDataItem = createMenuItem(SNOW_DATA_STRING, null);
     JMenuItem snowRawDataItem = createMenuItem(SNOW_RAW_DATA_STRING, null);
@@ -225,6 +230,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     dataMenu.add(graphItem);
     dataMenu.add(modifyItem);
     dataMenu.add(droughtItem);
+    dataMenu.add(windRoseItem);
     dataMenu.add(new JSeparator());
     dataMenu.add(snowGraphItem);
     dataMenu.add(snowDataItem);
@@ -472,9 +478,7 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     if (databaseReader.fileExists(droughtInputDialog.getYear(), droughtInputDialog.getMonth()))
     {
       // Create the chart and display.
-      DroughtWindow droughtWindow = new DroughtWindow(droughtInputDialog.getYear(),
-                                                      droughtInputDialog.getMonth(),
-                                                      droughtInputDialog.getDuration());
+      new DroughtWindow(droughtInputDialog.getYear(), droughtInputDialog.getMonth(), droughtInputDialog.getDuration());
     }
     else
     {
@@ -639,6 +643,15 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         droughtInputDialog = new DroughtInputDialog(this);
       else
         droughtInputDialog.setVisible(true);
+    }
+
+    else if (action.equalsIgnoreCase(WIND_ROSE_STRING))
+    {
+      // Display the Wind Rose window.
+      if (windRosePlot == null)
+        windRosePlot = new WindRosePlot();
+      else
+        windRosePlot.setVisible(true);
     }
 
     else if (action.equalsIgnoreCase(STREAM_STRING))
