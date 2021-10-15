@@ -10,17 +10,23 @@
   Purpose:	This class extends the basic DMP data structure by adding the
             calculated values.  This way the calculations only occur once.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package data.consolerecord;
 
 import algorithms.Calculations;
+import data.dbrecord.EvapotransRecord;
 import dbif.DatabaseReader;
+import util.ConfigProperties;
 import util.TimeUtil;
+
+import java.time.LocalDateTime;
 
 public class DmpDataExtended extends DmpData
 {
-  private static final DatabaseReader databaseReader = DatabaseReader.getInstance();
+  private static final DatabaseReader dbReader = DatabaseReader.getInstance();
+  private final ConfigProperties PROPS = ConfigProperties.instance();
 
   private float windChill;
   private float heatIndex;
@@ -53,17 +59,21 @@ public class DmpDataExtended extends DmpData
     wetBulbTemp = Calculations.calculateWetBulbTemperature(getOutsideTemp(), getOutsideHumidity());
     thw = Calculations.calculateTHW(getOutsideTemp(), getAverageWindSpeed(), getOutsideHumidity());
     thsw = Calculations.calculateTHSW(getOutsideTemp(), getAverageWindSpeed(), getOutsideHumidity(), getSolarRadiation());
-    et = Calculations.calculateET(getOutsideTemp(), getAverageWindSpeed(), getSolarRadiation(), getOutsideHumidity(),
-                                  getAvgPressure());
+    EvapotransRecord evapotransData = dbReader.getEvapotransData(LocalDateTime.now());
+    et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
+                                  evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
+                                  evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
+                                  PROPS.getElevation(), PROPS.getLatitude());
+    System.out.println("ET: " + et);
 
     // 288 is 24 hours per day * 60 minutes per day / 5 minutes.
     // TODO: This value should be adjusted whenever a different archive interval is selected.
     heatDD = (float)(heatDDTotal + (65.0 - getOutsideTemp()) / 288.0);
     coolDD = (float)(coolDDTotal + (getOutsideTemp() - 65.0) / 288.0);
 
-    float[] daysAverages = databaseReader.readDaysAverages(TimeUtil.getYear(getDateStamp()),
-                                                           TimeUtil.getMonth(getDateStamp()),
-                                                           TimeUtil.getDay(getDateStamp()));
+    float[] daysAverages = dbReader.readDaysAverages(TimeUtil.getYear(getDateStamp()),
+                                                     TimeUtil.getMonth(getDateStamp()),
+                                                     TimeUtil.getDay(getDateStamp()));
     avgInsideTemp = daysAverages[0];
     avgOutsideTemp = daysAverages[1];
     avgWindChill = daysAverages[2];
