@@ -9,7 +9,8 @@
 
   Purpose:	Class used to calculate wind chill, dew point and heat index.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package algorithms;
 
@@ -135,69 +136,66 @@ public class Calculations
   }
 
   /**
-   * Calculate the reference ET for a one hour period.  The measurements passed in are the average for a one hour
-   * period.  The weather station is not sophisticated enough to calculate an actual ET.  The actual ET can be
-   * calculated by multiplying the reference ET by a crop coefficient (Kc).
+   * Calculate the reference ET for a one hour period using the FAO Penman-Monteith method.  The measurements
+   * passed in are the average for a one hour period.  The weather station is not sophisticated enough to
+   * calculate an actual ET.  The actual ET can be calculated by multiplying the reference ET by a crop
+   * coefficient (Kc).
    *
-   * TODO: Each time the temperature is sampled (5 minute intervals), the value of the saturation vapor pressure and
+   * Each time the temperature is sampled (5 minute intervals), the value of the saturation vapor pressure and
    * actual water vapor pressure are calculated from the current values of temperature and humidity and sampled.
    * These vapor pressure values (in kPa) are used to compute the average saturation vapor pressure and the
    * average water vapor pressure for the hour.
    *
-   * @param temperature Average outside temperature in degrees F.
-   * @param windSpeed Average wind speed in MPH.
-   * @param solarRad Average solar radiation in W/m2.
-   * @param humidity Average percent humidity.
-   * @param pressure Average atmospheric pressure in inches of mercury.
+   * @param tempMin Minimum outside temperature in degrees F.
+   * @param tempMax Maximum outside temperature in degrees F.
+   * @param avgWindSpeed Average wind speed in MPH.
+   * @param avgSolarRad Average solar radiation in W/m2.
+   * @param minHumidity Minimum relative humidity.
+   * @param maxHumidity Maximum relative humidity.
+   * @param elevation The elevation in feet.
+   * @param latitude Latitude of current location in degrees.
    * @return The reference ET value.
    */
-  public static float calculateET (float temperature, float windSpeed, float solarRad, float humidity, float pressure)
+  public static float calculateET (float tempMin, float tempMax, float avgWindSpeed, float avgSolarRad,
+                                   float minHumidity, float maxHumidity, double elevation, double latitude)
   {
-    float tempC = (temperature - 32) * 5 / 9;
-    double tempK = tempC + 273.16;
-    double pressureKPa = pressure * 33.864;
-    double windSpeedMPS = windSpeed * 0.44704;
-    double saturatedWaterVP = 0.6108 * Math.exp(17.27 * tempC / (tempC + 237.3)); // in kPa
-    double actualWaterVaporPressure = saturatedWaterVP * humidity / 100;
-    double vaporCurveSlope = saturatedWaterVP / tempK * (6790.4985 / tempK - 5.02808);
-    double psychometricConstant = 0.000646 * (1 + 0.000946 * tempC) * pressureKPa;
-    double weightingFactor = vaporCurveSlope / (vaporCurveSlope + psychometricConstant);
-    double windFunction;
-    if (solarRad > 0)
-    {
-      windFunction = 0.030 + 0.0576 * windSpeedMPS;
-    }
-    else
-    {
-      windFunction = 0.125 * 0.0439 * windSpeedMPS;
-    }
-    double latentHeatVaporization = 694.5 * (1 - 0.000946 * tempC);
-
-    SunCalculations sunCalculations = new SunCalculations();
-    sunCalculations.performCalculations(LocalTime.now());
-    double solarElevationAngle = sunCalculations.getSolarElevationAngle();
-    double solarZenithAngle = sunCalculations.getSolarZenithAngle();
-
-    double irradiance = 1360.8 * Math.toRadians(solarZenithAngle);
-    double clearSkyRad = (0.79 - 3.75 / Math.toRadians(solarZenithAngle)) * irradiance; // TODO: not correct, check units.
-    double surfaceAlbedo = 0.26;
-    if (solarRad / irradiance >= 0.375)
-    {
-      surfaceAlbedo = 0.00158 * solarElevationAngle + 0.386 * Math.exp(-0.0188 * solarElevationAngle);
-    }
-    // Pressure is converted to millibars
-    double clearSkyEmissivity = 1.08 * (1 - Math.exp(-Math.pow(pressure * 33.8639, tempK / 2016.0)));
-    double temporary = (1.333 - 1.333 * solarRad / clearSkyRad);
-    double cloudCoverFraction = Math.pow((1.333 - 1.333 * solarRad / clearSkyRad), 0.294);
-    double stefanBotzmannConstant = 0.0000000567; // Watts per meter squared per tempK to the fourth power.
-
-    double rn = 0.89 * ((1 - surfaceAlbedo) * solarRad +
-      saturatedWaterVP * clearSkyEmissivity * (1 - cloudCoverFraction) * stefanBotzmannConstant * Math.pow(tempK, 4) +
-      cloudCoverFraction * stefanBotzmannConstant * Math.pow(tempK, 4) -
-      0.98 * stefanBotzmannConstant * Math.pow(tempK, 4));
-
-    return (float)(weightingFactor * rn / latentHeatVaporization +
-      (1 - weightingFactor) * (saturatedWaterVP - actualWaterVaporPressure) * windFunction);
+    double tempMeanC = ((tempMax + tempMin) / 2.0 - 32.0) * 5.0 / 9.0;
+    double tempMinC = (tempMin - 32.0) * 5.0 / 9.0;
+    double tempMaxC = (tempMax - 32.0) * 5.0 / 9.0;
+    double tempMeanK = tempMeanC + 273.15;
+    double tempMinK = tempMinC + 273.15;
+    double tempMaxK = tempMaxC + 273.15;
+    double solarRadMJ = avgSolarRad * 0.0864;
+    double avgWindSpeedMPS = avgWindSpeed * 0.447;
+    double vaporCurveSlope = (4098.0 * (0.6108 * Math.exp(17.27 * tempMeanC / tempMeanK))) / (tempMeanK * tempMeanK);
+    double elevationM = elevation * 0.3048;
+    double atmosphericPressure = 101.3 * Math.pow((293 - 0.0065 * elevationM)/293, 5.26);
+    double psychometricConstant = 0.000665 * atmosphericPressure;
+    double termDenominator = vaporCurveSlope + psychometricConstant * (1.0 + 0.34 * avgWindSpeedMPS);
+    double deltaTerm = vaporCurveSlope / termDenominator;
+    double psiTerm = psychometricConstant / termDenominator;
+    double tempTerm = (900.0 / tempMeanK) * avgWindSpeedMPS;
+    double minSaturatedVP = 0.6108 * Math.exp(17.27 * tempMinC / tempMinK);
+    double maxSaturatedVP = 0.6108 * Math.exp(17.27 * tempMaxC / tempMaxK);
+    double meanSaturationVP = (minSaturatedVP + maxSaturatedVP) / 2.0;
+    double actualVP = (minSaturatedVP * (minHumidity / 100.0) + maxSaturatedVP * (maxHumidity / 100.0)) / 2.0;
+    int julianDay = LocalDate.now().getDayOfYear();
+    double sunTerm = (2.0 * Math.PI / 365) * julianDay;
+    double solarDistance = 1.0 + 0.033 * Math.cos(sunTerm);
+    double solarDeclination = 0.409 * Math.sin(sunTerm - 1.39);
+    double latRadians = (Math.PI / 180.0) * latitude;
+    double sunsetHourAngle = Math.acos(-Math.tan(latRadians) * Math.tan(solarDeclination));
+    double extraterrestrialRadiation = 37.586032 * solarDistance *
+                                       (sunsetHourAngle * Math.sin(latRadians) * Math.sin(solarDeclination) +
+                                       Math.cos(latRadians) * Math.cos(solarDeclination) * Math.sin(sunsetHourAngle));
+    double clearSkyRad = (0.75 + 0.00002 * elevationM) * extraterrestrialRadiation;
+    double netIncomingSolar = (1.0 - 0.23) * solarRadMJ;
+    double netOutgoingRadiation = 0.000000004903 * ((Math.pow(tempMaxK, 4) + Math.pow(tempMinK, 4)) / 2.0) *
+                                  (0.34 - 0.14 * Math.sqrt(actualVP)) * ((1.35 * netIncomingSolar / clearSkyRad) - 0.35);
+    double netRadiation = 0.408 * (netIncomingSolar - netOutgoingRadiation);
+    double radiationTerm = deltaTerm * netRadiation;
+    double windTerm = psiTerm * tempTerm * (meanSaturationVP -actualVP);
+    return (float) (radiationTerm + windTerm);
   }
 
   /**
@@ -404,19 +402,21 @@ public class Calculations
 
   public static void main(String[] args)
   {
-    float temperature = 26.6f;
-    float windSpeed = 3.0f;
-    float humidity = 30;
-    float solarRad = 564.453f;
-    float pressure = 29.999f;
-    System.out.println("wind chill = " + Float.toString(calculateWindChill(temperature, windSpeed)));
-    System.out.println("heat index = " + Float.toString(calculateHeatIndex(temperature, humidity)));
-    System.out.println("dew point = " + Float.toString(calculateDewPoint (temperature, humidity)));
-    System.out.println("wet bulb temp = " + Float.toString(calculateWetBulbTemperature(temperature, humidity)));
-    System.out.println("ET = " + Float.toString(calculateET(temperature, windSpeed, solarRad, humidity, pressure)));
-    System.out.println("Wind Component: " + getTHSWWindComponent(temperature, windSpeed));
-    System.out.println("THW index: " + calculateTHW(temperature, windSpeed, humidity));
-    System.out.println("THSW index: " + calculateTHSW(temperature, windSpeed, humidity, solarRad));
+    float tempMin = 33.9f;
+    float tempMax = 70.0f;
+    float windSpeed = 4.0f;
+    float maxHumidity = 69;
+    float minHumidity = 30;
+    float solarRad = 40.45f;
+    System.out.println("wind chill = " + Float.toString(calculateWindChill(tempMax, windSpeed)));
+    System.out.println("heat index = " + Float.toString(calculateHeatIndex(tempMax, maxHumidity)));
+    System.out.println("dew point = " + Float.toString(calculateDewPoint (tempMax, maxHumidity)));
+    System.out.println("wet bulb temp = " + Float.toString(calculateWetBulbTemperature(tempMax, maxHumidity)));
+    System.out.println("ET = " + Double.toString(calculateET(tempMin, tempMax, windSpeed, solarRad, minHumidity,
+                                                             maxHumidity, 7067, 38.98)));
+    System.out.println("Wind Component: " + getTHSWWindComponent(tempMax, windSpeed));
+    System.out.println("THW index: " + calculateTHW(tempMax, windSpeed, maxHumidity));
+    System.out.println("THSW index: " + calculateTHSW(tempMax, windSpeed, maxHumidity, solarRad));
     System.out.println("Moon Phase = " + calculateMoonPhase());
     System.out.println("Moon Phase Illumination = " + getMoonPercentIllumination());
   }
