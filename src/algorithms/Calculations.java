@@ -136,7 +136,7 @@ public class Calculations
   }
 
   /**
-   * Calculate the reference ET for a one hour period using the FAO Penman-Monteith method.  The measurements
+   * Calculate the reference ET in inches for a one hour period using the FAO Penman-Monteith method.  The measurements
    * passed in are the average for a one hour period.  The weather station is not sophisticated enough to
    * calculate an actual ET.  The actual ET can be calculated by multiplying the reference ET by a crop
    * coefficient (Kc).
@@ -195,7 +195,7 @@ public class Calculations
     double netRadiation = 0.408 * (netIncomingSolar - netOutgoingRadiation);
     double radiationTerm = deltaTerm * netRadiation;
     double windTerm = psiTerm * tempTerm * (meanSaturationVP -actualVP);
-    return (float) (radiationTerm + windTerm);
+    return (float) ((radiationTerm + windTerm) * 0.039370);
   }
 
   /**
