@@ -13,7 +13,8 @@
             reads.  This class is a singleton because it saves the written
             records and all other classes operate on the one read data file.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package dbif;
 
@@ -502,6 +503,116 @@ public class DatabaseReader
       e.printStackTrace();
       return 0;
     }
+  }
+
+  /**
+   * Method to get the min/max temperature, min/max humidity and average solar radiation for the last 24 hour period.
+   *
+   * @param endDate The date/time for the end of the period, typically time now.
+   * @return The data contained within a record.
+   */
+  public EvapotransRecord getEvapotransData(LocalDateTime endDate)
+  {
+    EvapotransRecord etRecord = new EvapotransRecord();
+
+    LocalDateTime startDate = endDate.minusDays(1);
+
+    try
+    {
+      readData(startDate.getYear(), startDate.getMonthValue(),
+               getFilename(startDate.getYear(), startDate.getMonthValue()));
+      reset();
+    }
+    catch (IOException e)
+    {
+      logger.logData("DatabaseReader: getEvapotransData: Unable to read data: " + e.getLocalizedMessage());
+      return null;
+    }
+
+    float totalSolar = 0.0f;
+    int totalPoints = 0;
+    float totalWindSpeed = 0.0f;
+    boolean startFound = false;
+    DataFileRecord nextRecord = getNextRecord();
+    while (nextRecord != null)
+    {
+      if (nextRecord instanceof WeatherRecord)
+      {
+        WeatherRecord record = (WeatherRecord) nextRecord;
+
+        // Skip forward to the correct day/hour record.
+        if (!startFound)
+        {
+          LocalDateTime time = record.getTimestamp();
+          if (startDate.getDayOfMonth() <= time.getDayOfMonth() &&
+              startDate.getHour() <= time.getHour() &&
+              startDate.getMinute() <= time.getMinute())
+          {
+            startFound = true;
+          }
+          else
+          {
+            nextRecord = getNextRecord();
+            continue;
+          }
+        }
+
+        if (record.getOutsideTemp() < etRecord.getMinTemp())
+          etRecord.setMinTemp(record.getOutsideTemp());
+        if (record.getOutsideTemp() > etRecord.getMaxTemp())
+          etRecord.setMaxTemp(record.getOutsideTemp());
+        if (record.getOutsideHumidity() < etRecord.getMinHumidity())
+          etRecord.setMinHumidity(record.getOutsideHumidity());
+        if (record.getOutsideHumidity() > etRecord.getMaxHumidity())
+          etRecord.setMaxHumidity(record.getOutsideHumidity());
+
+        totalPoints++;
+        totalSolar = totalSolar + record.getSolarRadiation();
+        totalWindSpeed = totalWindSpeed + record.getAverageWindSpeed();
+      }
+      nextRecord = getNextRecord();
+    }
+
+    // If the data crosses the month boundary then there is another file's worth of data to read.
+    if (startDate.getYear() != endDate.getYear() || startDate.getMonthValue() != endDate.getMonthValue())
+    {
+      try
+      {
+        readData(endDate.getYear(), endDate.getMonthValue(), getFilename(endDate.getYear(), endDate.getMonthValue()));
+        reset();
+      }
+      catch (IOException e)
+      {
+        logger.logData("DatabaseReader: getEvapotransData: Unable to read data: " + e.getLocalizedMessage());
+        return null;
+      }
+
+      nextRecord = getNextRecord();
+      while (nextRecord != null)
+      {
+        if (nextRecord instanceof WeatherRecord)
+        {
+          WeatherRecord record = (WeatherRecord) nextRecord;
+
+          if (record.getOutsideTemp() < etRecord.getMinTemp())
+            etRecord.setMinTemp(record.getOutsideTemp());
+          if (record.getOutsideTemp() > etRecord.getMaxTemp())
+            etRecord.setMaxTemp(record.getOutsideTemp());
+          if (record.getOutsideHumidity() < etRecord.getMinHumidity())
+            etRecord.setMinHumidity(record.getOutsideHumidity());
+          if (record.getOutsideHumidity() > etRecord.getMaxHumidity())
+            etRecord.setMaxHumidity(record.getOutsideHumidity());
+
+          totalPoints++;
+          totalSolar = totalSolar + record.getSolarRadiation();
+          totalWindSpeed = totalWindSpeed + record.getAverageWindSpeed();
+        }
+        nextRecord = getNextRecord();
+      }
+    }
+    etRecord.setAvgSolarRad(totalSolar / (float)totalPoints);
+    etRecord.setAvgWindSpeed(totalWindSpeed / (float)totalPoints);
+    return etRecord;
   }
 
   /**
