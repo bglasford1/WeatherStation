@@ -11,13 +11,15 @@
             charts.  The periodic DMP is added as the data is received.  The
             y-axis is changed to match the data selected by the y-axis button.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package gui.graph;
 
 import algorithms.Calculations;
 import data.consolerecord.DmpDataExtended;
 import data.dbrecord.DataFileRecord;
+import data.dbrecord.EvapotransRecord;
 import data.dbrecord.WeatherRecord;
 import data.dbrecord.WeatherRecordExtended;
 import dbif.DatabaseCommon;
@@ -624,6 +626,10 @@ public class StreamDataThread
    */
   private void addData(long startTimeMillis, int year, int month)
   {
+    // First read and calculate the evapotranspiration data as it uses the dbReader and would
+    // interfere with the code below.
+    EvapotransRecord evapotransData = dbReader.getEvapotransData(LocalDateTime.now());
+
     // Read a months worth of data.
     try
     {
@@ -730,9 +736,11 @@ public class StreamDataThread
           boolean addToThswTrace = !thswData.getChart().equalsIgnoreCase(GraphDefs.NONE);
           thswData.addToStreamDataset(addToThswTrace, date, thswValue);
 
-          float et = Calculations.calculateET(data.getOutsideTemp(), data.getAverageWindSpeed(),
-                                              data.getSolarRadiation(), data.getOutsideHumidity(),
-                                              data.getPressure());
+          float et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
+                                              evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
+                                              evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
+                                              PROPS.getElevation(), PROPS.getLatitude());
+
           boolean addToEtTrace = !etData.getChart().equalsIgnoreCase(GraphDefs.NONE);
           etData.addToStreamDataset(addToEtTrace, date, et);
 

@@ -11,15 +11,13 @@
             chart.  The y-axis is changed based on the selection of the y-axis
             button.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package gui.graph;
 
 import algorithms.Calculations;
-import data.dbrecord.DailySummary1Record;
-import data.dbrecord.DataFileRecord;
-import data.dbrecord.WeatherRecord;
-import data.dbrecord.WeatherRecordExtended;
+import data.dbrecord.*;
 import dbif.DatabaseReader;
 import gui.graph.data.*;
 import org.jfree.chart.ChartFactory;
@@ -403,6 +401,10 @@ public class GraphDataThread
     int startMonth = startDate.getMonthValue();
     int startDay = startDate.getDayOfMonth();
 
+    // First read and calculate the evapotranspiration data as it uses the dbReader and would
+    // interfere with the code below.
+    EvapotransRecord evapotransData = dbReader.getEvapotransData(LocalDateTime.now());
+
     // Read first year/month file records.
     try
     {
@@ -419,12 +421,12 @@ public class GraphDataThread
 
     if (startYear == endYear && startMonth == endMonth)
     {
-      addData(startDay, endDay);
+      addData(startDay, endDay, evapotransData);
       addSummaryData(startDay, endDay, startMonth, startYear);
     }
     else
     {
-      addData(startDay, 0);
+      addData(startDay, 0, evapotransData);
       addSummaryData(startDay, 0, startMonth, startYear);
 
       startMonth++;
@@ -452,13 +454,13 @@ public class GraphDataThread
 
         if (startYear == endYear && startMonth == endMonth)
         {
-          addData(0, endDay);
+          addData(0, endDay, evapotransData);
           addSummaryData(0, endDay, startMonth, startYear);
           endReached = true;
         }
         else
         {
-          addData(0, 0);
+          addData(0, 0, evapotransData);
           addSummaryData(0, 0, startMonth, startYear);
 
           startMonth++;
@@ -532,7 +534,7 @@ public class GraphDataThread
    * @param startDay The start day value, if not zero then exclude days before this value.
    * @param endDay   The end day value, if not zero then exclude days after this value.
    */
-  private void addData(int startDay, int endDay)
+  private void addData(int startDay, int endDay, EvapotransRecord evapotransData)
   {
     DataFileRecord nextRecord = dbReader.getNextRecord();
     while (nextRecord != null)
@@ -591,9 +593,10 @@ public class GraphDataThread
                                                      data.getOutsideHumidity(), data.getSolarRadiation());
         thswData.getGraphSeries().add(minute, thswValue);
 
-        float et = Calculations.calculateET(data.getOutsideTemp(), data.getAverageWindSpeed(),
-                                            data.getSolarRadiation(), data.getOutsideHumidity(),
-                                            data.getPressure());
+        float et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
+                                            evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
+                                            evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
+                                            PROPS.getElevation(), PROPS.getLatitude());
         etData.getGraphSeries().add(minute, et);
 
 
