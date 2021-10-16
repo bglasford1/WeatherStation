@@ -827,6 +827,9 @@ public class DatabaseReader
       yearRead = year;
       monthRead = month;
 
+      // Read the header block that contains an ID code, the total number of records and an array of index records,
+      // one for each day of the month.
+
       // ID code = "WDAT5.3 ...
       for (int i = 0; i < 16; i++)
       {
@@ -876,7 +879,8 @@ public class DatabaseReader
         recordsBeforeLastDay += recordsInDay[i];
       }
 
-      // Read each record in the file.
+      // Read each record in the file.  The records are grouped by day.  Each day starts with two Daily Summary Records
+      // followed by weather records, one for each recording interval.
       for (int nextRecord = 0; nextRecord < numOfRecords; nextRecord++)
       {
         // The data type is 2 = Daily Summary Record #1, 3 = Daily Summary Record #2, 1 = Weather Data Record
@@ -1301,7 +1305,7 @@ public class DatabaseReader
 
     weatherRecord.setForecast((byte) fstream.read());
 
-    fstream.read(); // ET, Need UV sensor
+    weatherRecord.setEt((short) fstream.read());
 
     weatherRecord.setSoilTemp1Native((byte) fstream.read());
 

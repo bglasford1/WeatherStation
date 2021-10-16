@@ -16,7 +16,8 @@
             The data can be saved at different intervals depending on the
             settings in the console.  Data can also be missing.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package dbif;
 
@@ -349,7 +350,7 @@ public class DatabaseWriter
 
       writeShortValue(out, (short)0x00); // Daily solar energy not yet calculated
       writeShortValue(out, (short)0x00); // Min of sunlight assumed to be zero at midnight. Davis sets to 0x8000, unused.
-      writeShortValue(out, (short)0x00); // Daily ET Total not yet calculated.
+      writeShortValue(out, (short)0x00); // Daily ET Total.
 
       writeShortValue(out, (short)0);  // Hi heat index
       writeShortValue(out, (short)999);  // Low heat index
@@ -952,8 +953,14 @@ public class DatabaseWriter
 
       updateSummaryRecord(updateFile, minOfSunlight, summaryRecordOffset2 + DailySummary2Record.MIN_SUNLIGHT_OFFSET);
 
+      // Update daily ET total.
+      short dailyEtTotal =
+        readTwoByteValues(updateFile, summaryRecordOffset2 + DailySummary2Record.DAILY_ET_TOTAL_OFFSET);
 
-      // TODO: implement daily ET total.
+      Integer value = dailyEtTotal + Math.round(data.getEt() * 1000);
+      dailyEtTotal = value.shortValue();
+
+      updateSummaryRecord(updateFile, dailyEtTotal, summaryRecordOffset2 + DailySummary2Record.DAILY_ET_TOTAL_OFFSET);
 
       // Update high heat index.
       if (data.getOutsideTempNative() != (short)0x8000)
