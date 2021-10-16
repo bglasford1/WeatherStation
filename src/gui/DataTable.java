@@ -9,7 +9,9 @@
 
   Purpose:	This class is responsible for drawing the raw data table.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
+
 */
 package gui;
 
@@ -54,6 +56,7 @@ class DataTable extends JPanel implements TableModelListener
   private static final String WIND_DIR_STRING = "Wind Dir";
   private static final String SOLAR_RAD_STRING = "Solar Rad";
   private static final String HI_SOLAR_RAD_STRING = "Hi Solar Rad";
+  private static final String ET_STRING = "ET";
   private static final String FORECAST_STRING = "Forecast";
   private static final String ARCHIVE_INTERVAL_STRING = "Archive Interval";
 
@@ -74,6 +77,7 @@ class DataTable extends JPanel implements TableModelListener
       WIND_DIR_STRING,
       SOLAR_RAD_STRING,
       HI_SOLAR_RAD_STRING,
+      ET_STRING,
       FORECAST_STRING,
       ARCHIVE_INTERVAL_STRING
     };
@@ -109,7 +113,7 @@ class DataTable extends JPanel implements TableModelListener
     }
 
     int totalRows = dbReader.getRowCount();
-    Object[][] tableData = new Object[totalRows][18];
+    Object[][] tableData = new Object[totalRows][19];
     int rowCount = 0;
 
     DataFileRecord nextRecord = dbReader.getNextRecord();
@@ -256,8 +260,9 @@ class DataTable extends JPanel implements TableModelListener
             tableData[rowCount][15] = Short.toString(data.getHighSolarRadiation());
           }
 
-          tableData[rowCount][16] = Byte.toString(data.getForecast());
-          tableData[rowCount][17] = Byte.toString(data.getArchiveInterval());
+          tableData[rowCount][16] = Short.toString(data.getEt());
+          tableData[rowCount][17] = Byte.toString(data.getForecast());
+          tableData[rowCount][18] = Byte.toString(data.getArchiveInterval());
 
           rowCount++;
         }
