@@ -700,6 +700,9 @@ public class StreamDataThread
           boolean addToSolarTrace = !solarData.getChart().equalsIgnoreCase(GraphDefs.NONE);
           solarData.addToStreamDataset(addToSolarTrace, date, data.getSolarRadiation());
 
+          boolean addToEtTrace = !etData.getChart().equalsIgnoreCase(GraphDefs.NONE);
+          etData.addToStreamDataset(addToEtTrace, date, data.getEt());
+
           if (data.getPressureNative() != DatabaseCommon.UNDEFINED_SHORT_VALUE)
           {
             boolean addToTrace = !pressureData.getChart().equalsIgnoreCase(GraphDefs.NONE);
@@ -735,14 +738,6 @@ public class StreamDataThread
                                                      data.getOutsideHumidity(), data.getSolarRadiation());
           boolean addToThswTrace = !thswData.getChart().equalsIgnoreCase(GraphDefs.NONE);
           thswData.addToStreamDataset(addToThswTrace, date, thswValue);
-
-          float et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
-                                              evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
-                                              evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
-                                              PROPS.getElevation(), PROPS.getLatitude());
-
-          boolean addToEtTrace = !etData.getChart().equalsIgnoreCase(GraphDefs.NONE);
-          etData.addToStreamDataset(addToEtTrace, date, et);
 
           boolean addToHeatDDTrace = !heatDDData.getChart().equalsIgnoreCase(GraphDefs.NONE);
           heatDDData.addToStreamDataset(addToHeatDDTrace, date, data.getHeatDD());

@@ -575,6 +575,7 @@ public class GraphDataThread
         pressureData.getGraphSeries().add(minute, data.getPressure());
         rainData.getGraphSeries().add(minute, data.getRainfall());
         windSpeedData.getGraphSeries().add(minute, data.getAverageWindSpeed());
+        etData.getGraphSeries().add(minute, data.getEt());
 
         float windChill = Calculations.calculateWindChill(data.getOutsideTemp(), data.getAverageWindSpeed());
         windChillData.getGraphSeries().add(minute, windChill);
@@ -592,13 +593,6 @@ public class GraphDataThread
         float thswValue = Calculations.calculateTHSW(data.getOutsideTemp(), data.getAverageWindSpeed(),
                                                      data.getOutsideHumidity(), data.getSolarRadiation());
         thswData.getGraphSeries().add(minute, thswValue);
-
-        float et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
-                                            evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
-                                            evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
-                                            PROPS.getElevation(), PROPS.getLatitude());
-        etData.getGraphSeries().add(minute, et);
-
 
         boolean addToHeatDDTrace = !heatDDData.getChart().equalsIgnoreCase(GraphDefs.NONE);
         heatDDData.addToGraphDataset(addToHeatDDTrace, date, data.getHeatDD());
