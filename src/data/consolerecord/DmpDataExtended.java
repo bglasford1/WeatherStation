@@ -12,6 +12,7 @@
 
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
+            10/16/21  Removed ET print.
 */
 package data.consolerecord;
 
@@ -64,7 +65,6 @@ public class DmpDataExtended extends DmpData
                                   evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
                                   evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
                                   PROPS.getElevation(), PROPS.getLatitude());
-    System.out.println("ET: " + et);
 
     // 288 is 24 hours per day * 60 minutes per day / 5 minutes.
     // TODO: This value should be adjusted whenever a different archive interval is selected.

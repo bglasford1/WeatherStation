@@ -13,7 +13,8 @@
             commands.  This class only deals with Rev "B" of the record.
             Rev "A" is an older version that is not supported.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package data.consolerecord;
 
@@ -168,11 +169,6 @@ public class DmpData
     return outsideTemp;
   }
 
-  public void setOutsideTemp (short outsideTemp)
-  {
-    this.outsideTemp = outsideTemp;
-  }
-
   public float getHighOutsideTemp()
   {
     return highOutsideTemp / TENTHS;
@@ -181,11 +177,6 @@ public class DmpData
   public short getHighOutsideTempNative()
   {
     return highOutsideTemp;
-  }
-
-  public void setHighOutsideTemp (short highOutsideTemp)
-  {
-    this.highOutsideTemp = highOutsideTemp;
   }
 
   public float getLowOutsideTemp()
@@ -198,11 +189,6 @@ public class DmpData
     return lowOutsideTemp;
   }
 
-  public void setLowOutsideTemp (short lowOutsideTemp)
-  {
-    this.lowOutsideTemp = lowOutsideTemp;
-  }
-
   public float getInsideTemp()
   {
     return insideTemp / TENTHS;
@@ -213,19 +199,9 @@ public class DmpData
     return insideTemp;
   }
 
-  public void setInsideTemp (short insideTemp)
-  {
-    this.insideTemp = insideTemp;
-  }
-
   public short getNumOfWindSamples()
   {
     return numOfWindSamples;
-  }
-
-  public void setNumOfWindSamples (short numOfWindSamples)
-  {
-    this.numOfWindSamples = numOfWindSamples;
   }
 
   public float getPressure()
@@ -268,29 +244,14 @@ public class DmpData
     return highRainRate;
   }
 
-  public void setHighRainRate (short highRainRate)
-  {
-    this.highRainRate = highRainRate;
-  }
-
   public byte getOutsideHumidity()
   {
     return outsideHumidity;
   }
 
-  public void setOutsideHumidity (byte outsideHumidity)
-  {
-    this.outsideHumidity = outsideHumidity;
-  }
-
   public byte getInsideHumidity()
   {
     return insideHumidity;
-  }
-
-  public void setInsideHumidity (byte insideHumidity)
-  {
-    this.insideHumidity = insideHumidity;
   }
 
   public short getAverageWindSpeedNative()
@@ -303,11 +264,6 @@ public class DmpData
     return (short)(averageWindSpeed);
   }
 
-  public void setAverageWindSpeed (byte averageWindSpeed)
-  {
-    this.averageWindSpeed = averageWindSpeed;
-  }
-
   public short getHighWindSpeedNative()
   {
     return (short)(highWindSpeed * 10);
@@ -318,19 +274,9 @@ public class DmpData
     return (short)(highWindSpeed);
   }
 
-  public void setHighWindSpeed (byte highWindSpeed)
-  {
-    this.highWindSpeed = highWindSpeed;
-  }
-
   public byte getHighWindDirection()
   {
     return highWindDirection;
-  }
-
-  public void setHighWindDirection (byte highWindDirection)
-  {
-    this.highWindDirection = highWindDirection;
   }
 
   public byte getPrevailingWindDir()
@@ -338,41 +284,21 @@ public class DmpData
     return prevailingWindDir;
   }
 
-  public void setPrevailingWindDir (byte prevailingWindDir)
-  {
-    this.prevailingWindDir = prevailingWindDir;
-  }
-
   public short getHighSolarRadiation()
   {
     return highSolarRadiation;
   }
 
-  public void setHighSolarRadiation (short highSolarRadiation)
-  {
-    this.highSolarRadiation = highSolarRadiation;
-  }
-  
   public short getSolarRadiation()
   {
     return solarRadiation;
   }
 
-  public void setSolarRadiation(short solarRadiation)
-  {
-    this.solarRadiation = solarRadiation;
-  }
-  
   public byte getAverageUV()
   {
     return averageUV;
   }
 
-  public void setAverageUV(byte averageUV)
-  {
-    this.averageUV = averageUV;
-  }
-  
   public byte getEvapotranspiration()
   {
     return evapotranspiration;
@@ -388,19 +314,9 @@ public class DmpData
     return highUVIndex;
   }
 
-  public void setHighUVIndex(byte highUVIndex)
-  {
-    this.highUVIndex = highUVIndex;
-  }
-  
   public int getForecastRule()
   {
     return forecastRule & 0xFF;
-  }
-
-  public void setForecastRule(byte forecastRule)
-  {
-    this.forecastRule = forecastRule;
   }
 
   public int getSoilTemp1()
@@ -411,11 +327,6 @@ public class DmpData
   public byte getSoilTemp1Native()
   {
     return soilTemp1;
-  }
-
-  public void setSoilTemp1(byte soilTemp1)
-  {
-    this.soilTemp1 = soilTemp1;
   }
 
   public byte getRecordType()
