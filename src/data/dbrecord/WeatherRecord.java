@@ -10,7 +10,8 @@
   Purpose:	Class that encapsulates the standard archive record.  This data
             mainly supports the generation of graphs and strip charts.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/15/21  Fixed ET calculation.
 */
 package data.dbrecord;
 
@@ -47,7 +48,7 @@ public class WeatherRecord extends DataFileRecord
 //  private short leafTemp1, leafTemp2, leafTemp3, leafTemp4;
 //  private int extraRad;
   private byte   forecast;
-//  private short  et;
+  private short  et;
   private byte   soilTemp1; // This is a short and not a byte to get the math to work.
 //  private short soilTemp2;
 //  private short soilTemp3;
@@ -444,6 +445,16 @@ public class WeatherRecord extends DataFileRecord
     this.forecast = forecast;
   }
 
+  public void setEt(short evapotranspiration)
+  {
+    this.et = evapotranspiration;
+  }
+
+  public short getEt()
+  {
+    return et;
+  }
+
   public byte getSoilTemp1()
   {
     return (byte)(soilTemp1 - 90);
@@ -488,6 +499,7 @@ public class WeatherRecord extends DataFileRecord
       "Solar Rad: " + this.solarRadiation + "\n  " +
       "High Solar Rad: " + this.highSolarRadiation + "\n  " +
       "Forecast: " + this.forecast + "\n  " +
+      "ET: " + this.et + "\n  " +
       "Soil Temp 1: " + getSoilTemp1() + "\n  ";
   }
 }
