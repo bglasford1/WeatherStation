@@ -10,7 +10,8 @@
   Purpose:	Class that defines the summary record #1 that is read from the
             database files.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package data.dbrecord;
 
@@ -57,7 +58,7 @@ public class DailySummary1Record extends DataFileRecord
   private short avgSpeed;
   private short dailyWindRunTotal;
   private short hiTenMinSpeed; // Unimplemented by Davis
-  private byte  hiTenMinDir;   // Unimplemented by Davis
+  private byte  dirHiTenMin;   // Unimplemented by Davis
 
   private short dailyRainTotal;
   private short hiRainRate;
@@ -494,27 +495,27 @@ public class DailySummary1Record extends DataFileRecord
     this.hiTenMinSpeed = hiTenMinSpeed;
   }
 
-  public WindDirection getHiTenMinDir()
+  public WindDirection getDirHiTenMin()
   {
-    if (hiTenMinDir < 15 && hiTenMinDir > 0)
-      return WindDirection.values()[hiTenMinDir];
+    if (dirHiTenMin < 15 && dirHiTenMin > 0)
+      return WindDirection.values()[dirHiTenMin];
     else
       return null;
   }
 
-  public byte getHiTenMinDirNative()
+  public byte getDirHiTenMinNative()
   {
-    return hiTenMinDir;
+    return dirHiTenMin;
   }
 
-  public void setHiTenMinDir(WindDirection hiTenMinDir)
+  public void setDirHiTenMin(WindDirection hiTenMinDir)
   {
-    this.hiTenMinDir = (byte)hiTenMinDir.ordinal();
+    this.dirHiTenMin = (byte)hiTenMinDir.ordinal();
   }
 
-  public void setHiTenMinDirNative(byte hiTenMinDir)
+  public void setDirHiTenMinNative(byte hiTenMinDir)
   {
-    this.hiTenMinDir = hiTenMinDir;
+    this.dirHiTenMin = hiTenMinDir;
   }
 
   public float getDailyRainTotal()
@@ -952,54 +953,54 @@ public class DailySummary1Record extends DataFileRecord
   public String toString()
   {
     return "Daily Summary 1:\n  " +
-      "dateSpan: " + getDataSpan() + "\n  " +
-      "hiOutTemp: " + getHiOutTemp() + "\n  " +
-      "lowOutTemp: " + getLowOutTemp() + "\n  " +
-      "avgOutTemp: " + getAvgOutTemp() + "\n  " +
-      "hiInTemp: " + getHiInTemp() + "\n  " +
-      "lowInTemp: " + getLowInTemp() + "\n  " +
-      "avgInTemp: " + getAvgInTemp() + "\n  " +
-      "hiChill: " + getHiChill() + "\n  " +
-      "lowChill: " + getLowChill() + "\n  " +
-      "avgChill: " + getAvgChill() + "\n  " +
-      "hiDew: " + getHiDew() + "\n  " +
-      "lowDew: " + getLowDew() + "\n  " +
-      "avgDew: " + getAvgDew() + "\n  " +
-      "hiOutHumid: " + getHiOutHumid() + "\n  " +
-      "lowOutHumid: " + getLowOutHumid() + "\n  " +
-      "avgOutHumid: " + getAvgOutHumid() + "\n  " +
-      "hiInHumid: " + getHiInHumid() + "\n  " +
-      "lowInHumid: " + getLowInHumid() + "\n  " +
-      "hiBar: " + getHiBar() + "\n  " +
-      "lowBar: " + getLowBar() + "\n  " +
-      "avgBar: " + getAvgBar() + "\n  " +
-      "hiSpeed: " + getHiSpeed() + "\n  " +
-      "dirHiSpeed: " + getDirHiSpeed() + "\n  " +
-      "avgSpeed: " + getAvgSpeed() + "\n  " +
-      "dailyWindRunTotal: " + getDailyWindRunTotal() + "\n  " +
-      "hiTenMinSpeed: " + getHiTenMinSpeed() + " <-- Not Implemented by Davis\n  " +
-      "hiTenMinDir: " + getHiTenMinDir() + " <-- Not Implemented by Davis\n  " +
-      "dailyRainTotal: " + getDailyRainTotal() + "\n  " +
-      "hiRainRate: " + getHiRainRate() + "\n  " +
-      "dailyUVDose: " + getDailyUVDose() + " <-- No Sensor\n  " +
-      "hiUV: " + getHiUV() + " <-- No Sensor\n  " +
-      "Time of High Out Temp: " + getTimeOfHighOutTemp() + " or " + TimeUtil.toString(getTimeOfHighOutTemp()) + "\n  " +
-      "Time of Low Out Temp: " + getTimeOfLowOutTemp() + " or " + TimeUtil.toString(getTimeOfLowOutTemp()) + "\n  " +
-      "Time of High In Temp: " + getTimeOfHighInTemp() + " or " + TimeUtil.toString(getTimeOfHighInTemp()) + "\n  " +
-      "Time of Low In Temp: " + getTimeOfLowInTemp() + " or " + TimeUtil.toString(getTimeOfLowInTemp()) + "\n  " +
-      "Time of High Wind Chill: " + getTimeOfHighWindChill() + " or " + TimeUtil.toString(getTimeOfHighWindChill()) + "\n  " +
-      "Time of Low Wind Chill: " + getTimeOfLowWindChill() + " or " + TimeUtil.toString(getTimeOfLowWindChill()) + "\n  " +
-      "Time of High Dew Point: " + getTimeOfHighDewPoint() + " or " + TimeUtil.toString(getTimeOfHighDewPoint()) + "\n  " +
-      "Time of Low Dew Point: " + getTimeOfLowDewPoint() + " or " + TimeUtil.toString(getTimeOfLowDewPoint()) + "\n  " +
-      "Time of High Out Humidity: " + getTimeOfHighOutHumidity() + " or " + TimeUtil.toString(getTimeOfHighOutHumidity()) + "\n  " +
-      "Time of Low Out Humidity: " + getTimeOfLowOutHumidity() + " or " + TimeUtil.toString(getTimeOfLowOutHumidity()) + "\n  " +
-      "Time of High In Humidity: " + getTimeOfHighInHumidity() + " or " + TimeUtil.toString(getTimeOfHighInHumidity()) + "\n  " +
-      "Time of Low In Humidity: " + getTimeOfLowInHumidity() + " or " + TimeUtil.toString(getTimeOfLowInHumidity()) + "\n  " +
-      "Time of High Pressure: " + getTimeOfHighPressure() + " or " + TimeUtil.toString(getTimeOfHighPressure()) + "\n  " +
-      "Time of Low Pressure: " + getTimeOfLowPressure() + " or " + TimeUtil.toString(getTimeOfLowPressure()) + "\n  " +
-      "Time of High Wind Speed: " + getTimeOfHighWindSpeed() + " or " + TimeUtil.toString(getTimeOfHighWindSpeed()) + "\n  " +
-      "Time of High Average Wind Speed: <-- Not implemented by Davis" + "\n  " +
-      "Time of High Rain Rate: " + getTimeOfHighRainRate() + " or " + TimeUtil.toString(getTimeOfHighRainRate()) + "\n  " +
-      "Time of High UV: <-- No sensor" + "\n  ";
+           "dateSpan: " + getDataSpan() + "\n  " +
+           "hiOutTemp: " + getHiOutTemp() + "\n  " +
+           "lowOutTemp: " + getLowOutTemp() + "\n  " +
+           "avgOutTemp: " + getAvgOutTemp() + "\n  " +
+           "hiInTemp: " + getHiInTemp() + "\n  " +
+           "lowInTemp: " + getLowInTemp() + "\n  " +
+           "avgInTemp: " + getAvgInTemp() + "\n  " +
+           "hiChill: " + getHiChill() + "\n  " +
+           "lowChill: " + getLowChill() + "\n  " +
+           "avgChill: " + getAvgChill() + "\n  " +
+           "hiDew: " + getHiDew() + "\n  " +
+           "lowDew: " + getLowDew() + "\n  " +
+           "avgDew: " + getAvgDew() + "\n  " +
+           "hiOutHumid: " + getHiOutHumid() + "\n  " +
+           "lowOutHumid: " + getLowOutHumid() + "\n  " +
+           "avgOutHumid: " + getAvgOutHumid() + "\n  " +
+           "hiInHumid: " + getHiInHumid() + "\n  " +
+           "lowInHumid: " + getLowInHumid() + "\n  " +
+           "hiBar: " + getHiBar() + "\n  " +
+           "lowBar: " + getLowBar() + "\n  " +
+           "avgBar: " + getAvgBar() + "\n  " +
+           "hiSpeed: " + getHiSpeed() + "\n  " +
+           "dirHiSpeed: " + getDirHiSpeed() + "\n  " +
+           "avgSpeed: " + getAvgSpeed() + "\n  " +
+           "dailyWindRunTotal: " + getDailyWindRunTotal() + "\n  " +
+           "hiTenMinSpeed: " + getHiTenMinSpeed() + " <-- Not Implemented by Davis\n  " +
+           "dirHiTenMin: " + getDirHiTenMin() + " <-- Not Implemented by Davis\n  " +
+           "dailyRainTotal: " + getDailyRainTotal() + "\n  " +
+           "hiRainRate: " + getHiRainRate() + "\n  " +
+           "dailyUVDose: " + getDailyUVDose() + " <-- No Sensor\n  " +
+           "hiUV: " + getHiUV() + " <-- No Sensor\n  " +
+           "Time of High Out Temp: " + getTimeOfHighOutTemp() + " or " + TimeUtil.toString(getTimeOfHighOutTemp()) + "\n  " +
+           "Time of Low Out Temp: " + getTimeOfLowOutTemp() + " or " + TimeUtil.toString(getTimeOfLowOutTemp()) + "\n  " +
+           "Time of High In Temp: " + getTimeOfHighInTemp() + " or " + TimeUtil.toString(getTimeOfHighInTemp()) + "\n  " +
+           "Time of Low In Temp: " + getTimeOfLowInTemp() + " or " + TimeUtil.toString(getTimeOfLowInTemp()) + "\n  " +
+           "Time of High Wind Chill: " + getTimeOfHighWindChill() + " or " + TimeUtil.toString(getTimeOfHighWindChill()) + "\n  " +
+           "Time of Low Wind Chill: " + getTimeOfLowWindChill() + " or " + TimeUtil.toString(getTimeOfLowWindChill()) + "\n  " +
+           "Time of High Dew Point: " + getTimeOfHighDewPoint() + " or " + TimeUtil.toString(getTimeOfHighDewPoint()) + "\n  " +
+           "Time of Low Dew Point: " + getTimeOfLowDewPoint() + " or " + TimeUtil.toString(getTimeOfLowDewPoint()) + "\n  " +
+           "Time of High Out Humidity: " + getTimeOfHighOutHumidity() + " or " + TimeUtil.toString(getTimeOfHighOutHumidity()) + "\n  " +
+           "Time of Low Out Humidity: " + getTimeOfLowOutHumidity() + " or " + TimeUtil.toString(getTimeOfLowOutHumidity()) + "\n  " +
+           "Time of High In Humidity: " + getTimeOfHighInHumidity() + " or " + TimeUtil.toString(getTimeOfHighInHumidity()) + "\n  " +
+           "Time of Low In Humidity: " + getTimeOfLowInHumidity() + " or " + TimeUtil.toString(getTimeOfLowInHumidity()) + "\n  " +
+           "Time of High Pressure: " + getTimeOfHighPressure() + " or " + TimeUtil.toString(getTimeOfHighPressure()) + "\n  " +
+           "Time of Low Pressure: " + getTimeOfLowPressure() + " or " + TimeUtil.toString(getTimeOfLowPressure()) + "\n  " +
+           "Time of High Wind Speed: " + getTimeOfHighWindSpeed() + " or " + TimeUtil.toString(getTimeOfHighWindSpeed()) + "\n  " +
+           "Time of High Average Wind Speed: <-- Not implemented by Davis" + "\n  " +
+           "Time of High Rain Rate: " + getTimeOfHighRainRate() + " or " + TimeUtil.toString(getTimeOfHighRainRate()) + "\n  " +
+           "Time of High UV: <-- No sensor" + "\n  ";
   }
 }

@@ -10,7 +10,8 @@
   Purpose:	Class that defines the daily summary record #2 contained within
             the database file.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package data.dbrecord;
 
@@ -189,7 +190,7 @@ public class DailySummary2Record extends DataFileRecord
 
   public void setHiSolar(int hiSolar)
   {
-    this.hiSolar = (short)(hiSolar);
+    this.hiSolar = hiSolar;
   }
 
   public float getDailySolarEnergy()
@@ -267,7 +268,7 @@ public class DailySummary2Record extends DataFileRecord
     return lowHeat / TENTHS;
   }
 
-  public short getLowHeatNataive()
+  public short getLowHeatNative()
   {
     return lowHeat;
   }
@@ -447,7 +448,7 @@ public class DailySummary2Record extends DataFileRecord
     return lowWetBulbTemp / TENTHS;
   }
 
-  public short getLowWetBulbTempNataive()
+  public short getLowWetBulbTempNative()
   {
     return lowWetBulbTemp;
   }
