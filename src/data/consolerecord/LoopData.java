@@ -12,6 +12,7 @@
             is issued.  The Loop data format is Rev "A".
 
   Mods:		  09/01/21 Initial Release.
+            10/18/21  Got Daily Solar Energy working.
 */
 package data.consolerecord;
 
@@ -81,7 +82,7 @@ public class LoopData
   private byte  outsideHumidity    = 0;
   private short rainRate           = 0;
   private byte  uv                 = 0;
-  private short solarRadiation     = 0;
+  private short solarRadiation     = 0; // In Watts/m2
   private short stormRate          = 0;
   private int   startStormDateDay  = 0;
   private int   startStormDateMonth = 0;
