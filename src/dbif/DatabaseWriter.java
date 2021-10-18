@@ -19,6 +19,7 @@
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
             10/18/21  Added Summary 1 & 2 data tables.
+            10/18/21  Got Daily Solar Energy working.
 */
 package dbif;
 
@@ -37,6 +38,7 @@ import java.time.LocalDateTime;
 
 public class DatabaseWriter
 {
+  private static final double LANGLEYS = 0.0716667; // Note: this does not jive with Watts/m2 to Langleys, but is what Davis uses.
   private static final ConfigProperties PROPS = ConfigProperties.instance();
   private static final DatabaseCommon DB_COMMON = DatabaseCommon.getInstance();
   private static final DatabaseReader DB_READER = DatabaseReader.getInstance();
@@ -936,14 +938,14 @@ public class DatabaseWriter
                             summaryRecordOffset2 + DailySummary2Record.TIME_HIGH_SOLAR_OFFSET_2);
       }
 
-      // TODO: Update daily solar energy.  NEED A REASONABLE VALUE TO INSERT HERE....
-//      short totalSolarEnergy =
-//        readTwoByteValues(updateFile, summaryRecordOffset2 + DailySummary2Record.DAILY_SOLAR_ENERGY_OFFSET);
-//
-//      totalSolarEnergy += data.getSolarRadiation() * 5;
-//
-//      updateSummaryRecord(updateFile, totalSolarEnergy,
-//                          summaryRecordOffset2 + DailySummary2Record.DAILY_SOLAR_ENERGY_OFFSET);
+      // Update daily solar energy.
+      short totalSolarEnergy =
+        readTwoByteValues(updateFile, summaryRecordOffset2 + DailySummary2Record.DAILY_SOLAR_ENERGY_OFFSET);
+
+      totalSolarEnergy = (short)Math.round(((totalSolarEnergy / LANGLEYS) + data.getSolarRadiation()) * LANGLEYS);
+
+      updateSummaryRecord(updateFile, totalSolarEnergy,
+                          summaryRecordOffset2 + DailySummary2Record.DAILY_SOLAR_ENERGY_OFFSET);
 
       // Update minutes of sunlight.
       short minOfSunlight =
