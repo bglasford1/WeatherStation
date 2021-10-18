@@ -15,6 +15,7 @@
 
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package dbif;
 
@@ -1048,7 +1049,7 @@ public class DatabaseReader
 
     dailySummary1Record.setDirHiSpeedNative((byte) fstream.read());
 
-    dailySummary1Record.setHiTenMinDirNative((byte) (fstream.read()));
+    dailySummary1Record.setDirHiTenMinNative((byte) (fstream.read()));
 
     byte1 = fstream.read();
     byte2 = fstream.read();
@@ -1097,7 +1098,7 @@ public class DatabaseReader
 
     int byte1 = fstream.read();
     int byte2 = fstream.read();
-    dailySummary2Record.setNumOfWindPackets(byte2 << 8 | byte1);
+    dailySummary2Record.setNumOfWindPackets((short) (byte2 << 8 | byte1));
 
     byte1 = fstream.read();
     byte2 = fstream.read();

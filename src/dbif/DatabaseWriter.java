@@ -18,6 +18,7 @@
 
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package dbif;
 
@@ -1259,6 +1260,125 @@ public class DatabaseWriter
       byte soilTemp1Byte = record.getSoilTemp1Native();
       updateFile.seek(offset + WeatherRecord.SOIL_TEMP_1_OFFSET);
       updateFile.write(soilTemp1Byte);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * This method updates an existing Daily Summary #1 record due to an edit action.
+   *
+   * @param record The daily summary #1 record to update.
+   */
+  public void updateSummary1Record(DailySummary1Record record, int year, int month, int day)
+  {
+    String filename = DatabaseCommon.getFilename(year, month);
+
+    try (RandomAccessFile updateFile = new RandomAccessFile(databaseLocation + filename, "rw"))
+    {
+      // Index into the header and retrieve the day index record.
+      int dayRecordOffset = DatabaseCommon.DAY_INDEX_RECORD_OFFSET + 6 + (day * 6);
+      byte[] byteArray = new byte[4];
+      updateFile.seek(dayRecordOffset - 4);
+      byteArray[3] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 3);
+      byteArray[2] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 2);
+      byteArray[1] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 1);
+      byteArray[0] = updateFile.readByte();
+      int startPos = ByteUtil.byteArrayToInt(byteArray);
+
+      // The daily summary #2 record is always the second record of the day.
+      int offset = DatabaseCommon.HEADER_BLOCK_SIZE + startPos * DatabaseCommon.RECORD_SIZE + DatabaseCommon.RECORD_SIZE;
+
+      // Skip over the dataType and todaysWeather fields.
+      updateFile.seek(offset + 4);
+
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_OUT_TEMP_OFFSET, record.getHiOutTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_OUT_TEMP_OFFSET, record.getLowOutTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_IN_TEMP_OFFSET, record.getHiInTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_IN_TEMP_OFFSET, record.getLowInTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_OUT_TEMP_OFFSET, record.getAvgOutTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_IN_TEMP_OFFSET, record.getAvgInTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_CHILL_OFFSET, record.getHiChillNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_CHILL_OFFSET, record.getLowChillNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_DEW_OFFSET, record.getHiDewNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_DEW_OFFSET, record.getLowDewNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_CHILL_OFFSET, record.getAvgChillNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_DEW_OFFSET, record.getAvgDewNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_OUT_HUMID_OFFSET, record.getHiOutHumidNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_OUT_HUMID_OFFSET, record.getLowOutHumidNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_IN_HUMID_OFFSET, record.getHiInHumidNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_IN_HUMID_OFFSET, record.getLowInHumidNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_OUT_HUMID_OFFSET, record.getAvgOutTempNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_BAR_OFFSET, record.getHiBarNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.LOW_BAR_OFFSET, record.getLowBarNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_BAR_OFFSET, record.getAvgBarNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_WIND_SPEED_OFFSET, record.getHiSpeedNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.AVG_WIND_SPEED_OFFSET, record.getAvgSpeedNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.DAILY_WIND_RUN_TOTAL_OFFSET, record.getDailyWindRunTotalNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_10_MIN_SPEED_OFFSET, record.getHiTenMinSpeedNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.DIR_HI_WIND_SPEED_OFFSET, record.getDirHiSpeedNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.DIR_HI_10_MIN_SPEED_OFFSET, record.getDirHiTenMinNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.DAILY_RAIN_TOTAL_OFFSET, record.getDailyRainTotalNative());
+      writeShortValue(updateFile, offset + DailySummary1Record.HI_RAIN_RATE_OFFSET, record.getHiRainRateNative());
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * This method updates an existing Daily Summary #2 record due to an edit action.
+   *
+   * @param record The daily summary #2 record to update.
+   */
+  public void updateSummary2Record(DailySummary2Record record, int year, int month, int day)
+  {
+    String filename = DatabaseCommon.getFilename(year, month);
+
+    try (RandomAccessFile updateFile = new RandomAccessFile(databaseLocation + filename, "rw"))
+    {
+      // Index into the header and retrieve the day index record.
+      int dayRecordOffset = DatabaseCommon.DAY_INDEX_RECORD_OFFSET + 6 + (day * 6);
+      byte[] byteArray = new byte[4];
+      updateFile.seek(dayRecordOffset - 4);
+      byteArray[3] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 3);
+      byteArray[2] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 2);
+      byteArray[1] = updateFile.readByte();
+      updateFile.seek(dayRecordOffset - 1);
+      byteArray[0] = updateFile.readByte();
+      int startPos = ByteUtil.byteArrayToInt(byteArray);
+
+      // The daily summary #2 record is always the second record of the day.
+      int offset = DatabaseCommon.HEADER_BLOCK_SIZE + startPos * DatabaseCommon.RECORD_SIZE + DatabaseCommon.RECORD_SIZE;
+
+      // Skip over the dataType and todaysWeather fields.
+      updateFile.seek(offset + 4);
+
+      writeShortValue(updateFile, offset + DailySummary2Record.NUM_OF_WIND_PACKETS_OFFSET, (short)record.getNumOfWindPackets());
+      writeShortValue(updateFile, offset + DailySummary2Record.HI_SOLAR_OFFSET, (short)record.getHiSolar());
+      writeShortValue(updateFile, offset + DailySummary2Record.DAILY_SOLAR_ENERGY_OFFSET, record.getDailySolarEnergyNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.MIN_SUNLIGHT_OFFSET, record.getMinSunlight());
+      writeShortValue(updateFile, offset + DailySummary2Record.DAILY_ET_TOTAL_OFFSET, record.getDailyETTotalNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.HI_HEAT_OFFSET, record.getHiHeatNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.LOW_HEAT_OFFSET, record.getLowHeatNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.AVG_HEAT_OFFSET, record.getAvgHeatNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.HI_THSW_OFFSET, record.getHiTHSWNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.LOW_THSW_OFFSET, record.getLowTHSWNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.HI_THW_OFFSET, record.getHiTHWNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.LOW_THW_OFFSET, record.getLowTHWNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.HEAT_DD_OFFSET, record.getIntegratedHeatDD65Native());
+      writeShortValue(updateFile, offset + DailySummary2Record.HI_WET_BULB_OFFSET, record.getHiWetBuldTempNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.LOW_WET_BULB_OFFSET, record.getLowWetBulbTempNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.AVG_WET_BULB_OFFSET, record.getAvgWetBulbTempNative());
+      writeShortValue(updateFile, offset + DailySummary2Record.COOL_DD_OFFSET, record.getIntegratedCoolDD65Native());
     }
     catch (IOException e)
     {
