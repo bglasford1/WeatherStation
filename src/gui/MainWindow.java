@@ -17,6 +17,7 @@
             10/09/21  Changed to PWS Weather.
             10/11/21  Changed hourly forecast data to table.
             10/13/21  Added Wind Rose plot.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package gui;
 
@@ -30,6 +31,9 @@ import gui.reports.*;
 import gui.snow.SnowDataTable;
 import gui.snow.SnowRawDataTable;
 import gui.snow.SnowGraphWindow;
+import gui.table.Summary1DataTable;
+import gui.table.Summary2DataTable;
+import gui.table.WeatherDataTable;
 import gui.windrose.WindRosePlot;
 import serialdriver.*;
 import util.ConfigProperties;
@@ -64,9 +68,11 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   // DATA sub-menu items.
   private static final String STREAM_STRING        = "Stream Data";
   private static final String GRAPH_STRING         = "Graph Data";
-  private static final String MODIFY_STRING        = "Modify Data";
   private static final String DROUGHT_STRING       = "Drought Analysis";
   private static final String WIND_ROSE_STRING     = "Wind Rose";
+  private static final String MOD_WEATHER_STRING   = "Modify Weather Data";
+  private static final String MOD_SUMMARY1_STRING  = "Modify Summary 1 Data";
+  private static final String MOD_SUMMARY2_STRING  = "Modify Summary 2 Data";
   private static final String SNOW_GRAPH_STRING    = "Snow Graph";
   private static final String SNOW_DATA_STRING     = "Snow Data";
   private static final String SNOW_RAW_DATA_STRING = "Snow Raw Data";
@@ -215,9 +221,11 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
     JMenu dataMenu = new JMenu("Data");
     JMenuItem streamItem = createMenuItem(STREAM_STRING, null);
     JMenuItem graphItem = createMenuItem(GRAPH_STRING, null);
-    JMenuItem modifyItem = createMenuItem(MODIFY_STRING, null);
     JMenuItem droughtItem = createMenuItem(DROUGHT_STRING, null);
     JMenuItem windRoseItem = createMenuItem(WIND_ROSE_STRING, null);
+    JMenuItem modifyWeatherItem = createMenuItem(MOD_WEATHER_STRING, null);
+    JMenuItem modifySummary1Item = createMenuItem(MOD_SUMMARY1_STRING, null);
+    JMenuItem modifySummary2Item = createMenuItem(MOD_SUMMARY2_STRING, null);
     JMenuItem snowGraphItem = createMenuItem(SNOW_GRAPH_STRING, null);
     JMenuItem snowDataItem = createMenuItem(SNOW_DATA_STRING, null);
     JMenuItem snowRawDataItem = createMenuItem(SNOW_RAW_DATA_STRING, null);
@@ -228,9 +236,12 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
 
     dataMenu.add(streamItem);
     dataMenu.add(graphItem);
-    dataMenu.add(modifyItem);
     dataMenu.add(droughtItem);
     dataMenu.add(windRoseItem);
+    dataMenu.add(new JSeparator());
+    dataMenu.add(modifyWeatherItem);
+    dataMenu.add(modifySummary1Item);
+    dataMenu.add(modifySummary2Item);
     dataMenu.add(new JSeparator());
     dataMenu.add(snowGraphItem);
     dataMenu.add(snowDataItem);
@@ -456,10 +467,24 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
   {
     if (databaseReader.fileExists(dateInputDialog.getYear(), dateInputDialog.getMonth()))
     {
-      // Create the table and display.
-      DataTable dataTable = new DataTable();
-      dataTable.createTable(dateInputDialog.getYear(), dateInputDialog.getMonth());
-      DataTable.createAndShowGUI(dataTable);
+      if (dateInputDialog.getDataType().equalsIgnoreCase(MOD_WEATHER_STRING))
+      {
+        WeatherDataTable weatherDataTable = new WeatherDataTable();
+        weatherDataTable.createTable(dateInputDialog.getYear(), dateInputDialog.getMonth());
+        WeatherDataTable.createAndShowGUI(weatherDataTable);
+      }
+      else if (dateInputDialog.getDataType().equalsIgnoreCase(MOD_SUMMARY1_STRING))
+      {
+        Summary1DataTable summary1DataTable = new Summary1DataTable();
+        summary1DataTable.createTable(dateInputDialog.getYear(), dateInputDialog.getMonth());
+        Summary1DataTable.createAndShowGUI(summary1DataTable);
+      }
+      else if (dateInputDialog.getDataType().equalsIgnoreCase(MOD_SUMMARY2_STRING))
+      {
+        Summary2DataTable summary2DataTable = new Summary2DataTable();
+        summary2DataTable.createTable(dateInputDialog.getYear(), dateInputDialog.getMonth());
+        Summary2DataTable.createAndShowGUI(summary2DataTable);
+      }
     }
     else
     {
@@ -627,15 +652,6 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
       graphWindow.setVisible(true);
     }
 
-    else if (action.equalsIgnoreCase(MODIFY_STRING))
-    {
-      // Display a dialog box to get the month and year.
-      if (dateInputDialog == null)
-        dateInputDialog = new DateInputDialog(this);
-      else
-        dateInputDialog.setVisible(true);
-    }
-
     else if (action.equalsIgnoreCase(DROUGHT_STRING))
     {
       // Display a dialog box to get the month and year.
@@ -652,6 +668,48 @@ public class MainWindow extends JFrame implements ActionListener, WindowListener
         windRosePlot = new WindRosePlot();
       else
         windRosePlot.setVisible(true);
+    }
+
+    else if (action.equalsIgnoreCase(MOD_WEATHER_STRING))
+    {
+      // Display a dialog box to get the month and year.
+      if (dateInputDialog == null)
+      {
+        dateInputDialog = new DateInputDialog(this, MOD_WEATHER_STRING);
+      }
+      else
+      {
+        dateInputDialog.setDataType(MOD_WEATHER_STRING);
+        dateInputDialog.setVisible(true);
+      }
+    }
+
+    else if (action.equalsIgnoreCase(MOD_SUMMARY1_STRING))
+    {
+      // Display a dialog box to get the month and year.
+      if (dateInputDialog == null)
+      {
+        dateInputDialog = new DateInputDialog(this, MOD_SUMMARY1_STRING);
+      }
+      else
+      {
+        dateInputDialog.setDataType(MOD_SUMMARY1_STRING);
+        dateInputDialog.setVisible(true);
+      }
+    }
+
+    else if (action.equalsIgnoreCase(MOD_SUMMARY2_STRING))
+    {
+      // Display a dialog box to get the month and year.
+      if (dateInputDialog == null)
+      {
+        dateInputDialog = new DateInputDialog(this, MOD_SUMMARY2_STRING);
+      }
+      else
+      {
+        dateInputDialog.setDataType(MOD_SUMMARY2_STRING);
+        dateInputDialog.setVisible(true);
+      }
     }
 
     else if (action.equalsIgnoreCase(STREAM_STRING))

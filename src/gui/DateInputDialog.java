@@ -10,7 +10,8 @@
   Purpose:	This class is used to input the month and year values to modify
             the raw data.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/18/21  Added Summary 1 & 2 data tables.
 */
 package gui;
 
@@ -30,14 +31,16 @@ class DateInputDialog extends JDialog implements ActionListener
   private final JTextField yearField = new JTextField();
 
   private final MainWindow parent;
+  private String dataType;
 
   /**
    * Constructor that draws the initial dialog box.
    */
-  DateInputDialog(MainWindow parent)
+  DateInputDialog(MainWindow parent, String dataType)
   {
     super(parent, "Date Input Dialog Box", false);
     this.parent = parent;
+    this.dataType = dataType;
 
     JLabel monthLabel = new JLabel("Month:  ", JLabel.CENTER);
     JLabel yearLabel  = new JLabel("Year:  ", JLabel.CENTER);
@@ -73,6 +76,11 @@ class DateInputDialog extends JDialog implements ActionListener
     setVisible(true);
   }
 
+  public void setDataType(String dataType)
+  {
+    this.dataType = dataType;
+  }
+
   /**
    * Method called when the OK button is pressed.
    */
@@ -106,5 +114,10 @@ class DateInputDialog extends JDialog implements ActionListener
       return 0;
     else
       return Integer.valueOf(yearField.getText());
+  }
+
+  public String getDataType()
+  {
+    return dataType;
   }
 }
