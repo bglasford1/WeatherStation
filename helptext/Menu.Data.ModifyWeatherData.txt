@@ -1,0 +1,6 @@
+Main Menu -> Data -> Modify Weather Data:
+
+The Data main menu item contains the Modify Weather Data sub-menu item.  Upon selection, a data input dialog box is displayed which is used to select a portion of the raw data to display.  The data is saved in month files.
+
+The data is displayed in a tabular table.  Individual cells can be modified by double clicking on a cell.  The value can be nulled by entering a "--" or "---" value.  Once a value is modified, hit the return key to save the value.
+

@@ -6,11 +6,15 @@ Stream Data:  Launches a window to view streaming live data.
 
 Graph Data:  Launches a window to graphically view all historic data.
 
-Modify Data: Launches a window to view the historic data.
-
 Drought Data: Launches a window to view drought analysis data.
 
 Wind Rose: Launches a window to view wind data as a wind rose.
+
+Modify Weather Data: Launches a window to view the historic interval data.
+
+Modify Summary 1 Data: Launches a window to view the historic daily summary 1 data.
+
+Modify Summary 2 Data: Launches a window to view the historic daily summary 2 data.
 
 Snow Graph:  Launches a window to graphically view the historic snow data.
 
