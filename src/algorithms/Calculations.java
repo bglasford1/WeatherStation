@@ -7,10 +7,12 @@
   or any later version. This software is distributed without any warranty
   expressed or implied. See the GNU General Public License for more details.
 
-  Purpose:	Class used to calculate wind chill, dew point and heat index.
+  Purpose:	Class used to calculate wind chill, dew point and heat indices.
+            These are based on the Davis formulas.
 
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
+            10/20/21  Fixed various calculations.
 */
 package algorithms;
 
@@ -47,19 +49,19 @@ public class Calculations
   };
 
   /**
-   * Calculate the wind chill based on the current temperature and wind speed.
+   * Calculate the wind chill based on the current temperature and the 10-minute average wind speed.
    *
    * @param temperature Current temp in degrees F.
-   * @param windSpeed Current wind speed in MPH.
+   * @param windSpeed 10-minute average wind speed in MPH.
    * @return The wind chill in degrees F.
    */
   public static float calculateWindChill (float temperature, float windSpeed)
   {
-    if (temperature > 50 || windSpeed < 3.0)
-      return temperature;
-
     double speed = StrictMath.pow(windSpeed, 0.16);
     double windChill = 35.74 + 0.6215 * temperature - 35.75 * speed + 0.4275 * temperature * speed;
+
+    if (windChill > temperature)
+      return temperature;
 
     return (float)windChill;
   }
@@ -100,7 +102,6 @@ public class Calculations
     {
       return (float)(heatIndex + ((humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0));
     }
-
     return (float)heatIndex;
   }
 
@@ -213,7 +214,7 @@ public class Calculations
     float baseTemp = calculateHeatIndex(temperature, humidity);
 
     // Now add the wind component.
-    return baseTemp + getTHSWWindComponent(temperature, windSpeed);
+    return baseTemp + getTHSWWindComponent(temperature, windSpeed, baseTemp);
   }
 
   /**
@@ -228,25 +229,25 @@ public class Calculations
    */
   public static float calculateTHSW(float temperature, float windSpeed, float humidity, float solarRad)
   {
-    // Start with the THW index.
-//    System.out.println("Temp: " + temperature);
-    double baseTemp = calculateHeatIndex(temperature, humidity);
-//    System.out.println("Base Temp: " + baseTemp);
+    // Start with the heat index.
+    float baseTemp = calculateHeatIndex(temperature, humidity);
 
     // Now add the wind component.
-    baseTemp = baseTemp + getTHSWWindComponent(temperature, windSpeed);
-//    System.out.println("Base Temp + Wind: " + baseTemp);
+    baseTemp = baseTemp + getTHSWWindComponent(temperature, windSpeed, baseTemp);
 
-    //***
-    //*** Now add the solar component which consists of 4 components: Q1 + Q2 + Q3 + Q4
-    //***
-    // Calculate clear sky radiation
+    /*
+     * Now add the solar component which consists of 4 components: Q1 + Q2 + Q3 + Q4
+     * where Q1 = Direct Incoming Solar Radiation
+     *       Q2 = Indirect Incoming Solar Radiation
+     *       Q3 = Terrestial Radiation
+     *       Q4 = Sky Radiation
+     */
+
+    // Calculate clear sky radiation.  Start by performing sun calculations.
     SunCalculations sunCalculations = new SunCalculations();
     sunCalculations.performCalculations(LocalTime.now());
+
     double clearSkyRad = sunCalculations.getClearSkyRad();
-//    System.out.println("Clear Sky Radiation: " + clearSkyRad);
-    // TODO: this is lower than the actual solar radiation.
-    // TODO: look to make it a table look-up from actual clear sky data versus time.
 
     // Calculate the Sky Cover, c.
     double c;
@@ -254,36 +255,35 @@ public class Calculations
     {
       clearSkyRad = solarRad;
     }
-    c = Math.pow(Math.E, Math.log((solarRad / clearSkyRad + 1) / 0.75) / 0.29412) / 100; // TODO: this is horked up...
-//    System.out.println("C: " + c);
+    c = Math.pow(Math.E, Math.log((solarRad / clearSkyRad + 1) / 0.75) / 0.29412) / 100;
 
     // Normalize the solar radiation.
-    double solarElevationAngle = sunCalculations.getSolarElevationAngle();
-    double solarRadNormal;
+    double zenithAngle = sunCalculations.getSolarZenithAngle();
+    double solarRadNormalized;
     if (c > .6)
     {
-      solarRadNormal = solarRad;
+      solarRadNormalized = solarRad;
     }
     else
     {
-      double angelSquared = solarElevationAngle * solarElevationAngle;
-      double angleCubed = angelSquared * solarElevationAngle;
-      solarRadNormal = (0.000005 * angleCubed - 0.0002 * angelSquared + 0.0029 * solarElevationAngle + 1) * solarRad;
+      double angleSquared = zenithAngle * zenithAngle;
+      double angleCubed = angleSquared * zenithAngle;
+      solarRadNormalized =  solarRad * (1.0 + 0.0029 * zenithAngle - 0.0002 * angleSquared + 0.000005 * angleCubed);
     }
 
     double bodyAreaFactor;
-    if (solarElevationAngle < 2)
+    if (zenithAngle < 2)
       bodyAreaFactor = 0.11;
-    else if (solarElevationAngle > 70)
+    else if (zenithAngle > 70)
       bodyAreaFactor = 0.325;
     else
-      bodyAreaFactor = 0.386 - 0.0032 * (90 - solarElevationAngle);
+      bodyAreaFactor = 0.386 - 0.0032 * (90 - zenithAngle);
 
     // Calculate the Direct Incoming Solar Radiation Term (Q1)
-    double Q1 = 0.56 * solarRadNormal * bodyAreaFactor;
+    double Q1 = 0.56 * solarRadNormalized * bodyAreaFactor;
 
     // Calculate the Indirect Incoming Solar Radiation Term (Q2)
-    double Q2 = 0.224 * 0.1 * solarRadNormal * (1.0 - c * c);
+    double Q2 = 0.224 * 0.1 * solarRadNormalized * (1.0 - c * c);
 
     // Calculate the Terrestrial Radiation (Q3)
     double Q3 = 0.028 * solarRad;
@@ -306,15 +306,22 @@ public class Calculations
     return (float)(baseTemp + Qg);
   }
 
-  private static int getTHSWWindComponent(float temp, float windSpeed)
+  private static float getTHSWWindComponent(float temp, float windSpeed, float baseTemp)
   {
+    if (windSpeed == 0)
+      return 0;
+
+    if (temp >= 130)
+      return 0;
+
     int tempIndex = 0;
     if (temp < 50)
     {
-      // TODO: implement, see THSW Index Davis sheet. "use the wind chill calculation as the base temperature."
       // "For WeatherLink 5.2 and newer: use the new heat index formula as the base temperature and calculate the
       // wind chill increment using the difference between the air temperature and the wind chill (which is
       // always a negative number)."
+      float windChill = calculateWindChill(baseTemp, windSpeed);
+      return temp - windChill;
     }
     else if (temp >= 50 && temp <= 52.5)
       tempIndex = 0;
@@ -402,19 +409,19 @@ public class Calculations
 
   public static void main(String[] args)
   {
-    float tempMin = 33.9f;
-    float tempMax = 70.0f;
-    float windSpeed = 4.0f;
-    float maxHumidity = 69;
-    float minHumidity = 30;
-    float solarRad = 40.45f;
+    float tempMin = 45.0f;
+    float tempMax = 45.0f;
+    float windSpeed = 1.0f;
+    float maxHumidity = 40;
+    float minHumidity = 40;
+    float solarRad = 385.0f;
     System.out.println("wind chill = " + Float.toString(calculateWindChill(tempMax, windSpeed)));
     System.out.println("heat index = " + Float.toString(calculateHeatIndex(tempMax, maxHumidity)));
     System.out.println("dew point = " + Float.toString(calculateDewPoint (tempMax, maxHumidity)));
     System.out.println("wet bulb temp = " + Float.toString(calculateWetBulbTemperature(tempMax, maxHumidity)));
     System.out.println("ET = " + Double.toString(calculateET(tempMin, tempMax, windSpeed, solarRad, minHumidity,
                                                              maxHumidity, 7067, 38.98)));
-    System.out.println("Wind Component: " + getTHSWWindComponent(tempMax, windSpeed));
+    System.out.println("Wind Component: " + getTHSWWindComponent(tempMax, windSpeed, tempMax));
     System.out.println("THW index: " + calculateTHW(tempMax, windSpeed, maxHumidity));
     System.out.println("THSW index: " + calculateTHSW(tempMax, windSpeed, maxHumidity, solarRad));
     System.out.println("Moon Phase = " + calculateMoonPhase());
