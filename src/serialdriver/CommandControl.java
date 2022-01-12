@@ -19,7 +19,9 @@
             save.  The save data is the HiLow and DMP/DMPAFT data.  The Loop data
             is sent the windowing classes for display.
 
-  Mods:		  09/01/21 Initial Release.
+  Mods:		  09/01/21  Initial Release.
+            10/09/21  Enabled sending of DMP & Loop data to WeatherServerIF
+            01/10/22  Minor fix.
 */
 package serialdriver;
 
@@ -293,8 +295,8 @@ public class CommandControl
       byte[] crc = ccitt.calculateCRC(newBuffer, bufferSize - 1);
       if (crc[0] != 0 || crc[1] != 0)
       {
-        logger.captureData("  Rx: CRC Failure: " + originalCmd.toString(), Logger.Level.COARSE);
-        logger.logData("Rx: CRC Failure: " + originalCmd.toString());
+        logger.captureData("  Rx: CRC Failure: " + originalCmd, Logger.Level.COARSE);
+        logger.logData("Rx: CRC Failure: " + originalCmd);
         return;
       }
 
@@ -492,7 +494,11 @@ public class CommandControl
           DB_WRITER.insertWeatherRecord(dmpData);
           dmpData.calculateData(DB_READER.getHeatDDTotal(), DB_READER.getCoolDDTotal());
           DB_WRITER.updateSummaryRecords(dmpData);
-//          wxInterface.setDmpData(dmpData); // TODO: was causing an error.
+          wxInterface.setDmpData(dmpData);
+          boolean response = wxInterface.sendData();
+          if (!response)
+            logger.logData("WARNING: Data send to PWS Weather failed.");
+
           streamDataThread.addNewData(dmpData);
 
           WindDirection windDirection = WindDirection.valueOf(dmpData.getPrevailingWindDir());
