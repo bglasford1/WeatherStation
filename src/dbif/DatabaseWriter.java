@@ -20,6 +20,8 @@
             10/15/21  Fixed ET calculation.
             10/18/21  Added Summary 1 & 2 data tables.
             10/18/21  Got Daily Solar Energy working.
+            01/10/22  End of year DMPAFT error.
+            01/11/22  Minor logging tweaks.
 */
 package dbif;
 
@@ -236,6 +238,7 @@ public class DatabaseWriter
   private void createNewDataFile(int year, int month)
   {
     String filename = DatabaseCommon.getFilename(year, month);
+    logger.captureData("Creating new DB file: " + filename, Logger.Level.COARSE);
     try
     {
       File file = new File(databaseLocation + filename);
@@ -286,6 +289,7 @@ public class DatabaseWriter
    */
   private void insertNewSummaryRecords(String filename, DmpData data)
   {
+    logger.captureData("Creating new summary records", Logger.Level.COARSE);
     try (FileOutputStream out = new FileOutputStream(databaseLocation + filename, true))
     {
       // Create summary 1 record bytes
@@ -459,14 +463,21 @@ public class DatabaseWriter
       return;
     }
 
+    // If attempting to write a record for a file that does not exist, then create the file.
+    if (!DB_READER.fileExists(year, month))
+    {
+      createNewDataFile(year, month);
+
+      if (hour != 0 || minute != 0)
+      {
+        // This is a case where this is a new file and not the first record of the month.
+        insertNewSummaryRecords(filename, data);
+      }
+    }
+
     // If this is the first record in the day, then insert 2 new summary records.
     if (hour == 0 && minute == 0)
     {
-      // If this is the first record in the month, then create a new data file first.
-      if (day == 1)
-      {
-        createNewDataFile(year, month);
-      }
       insertNewSummaryRecords(filename, data);
     }
 
@@ -550,6 +561,7 @@ public class DatabaseWriter
       updateFile.write(newRecordCount[1]);
       updateFile.seek(dayRecordOffset + 1);
       updateFile.write(newRecordCount[0]);
+      logger.captureData("Adding new DB record, total count for day: " + recordCount, Logger.Level.COARSE);
     }
     catch (IOException e)
     {

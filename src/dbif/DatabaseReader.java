@@ -16,6 +16,7 @@
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
             10/18/21  Added Summary 1 & 2 data tables.
+            01/11/21  Avoided ET error.
 */
 package dbif;
 
@@ -440,7 +441,7 @@ public class DatabaseReader
         }
       }
     }
-    return Integer.toString(month) + "/" + Integer.toString(lastDay) + "/" + Integer.toString(year);
+    return month + "/" + lastDay + "/" + year;
   }
 
   public String getFilename(int year, int month)
@@ -524,7 +525,7 @@ public class DatabaseReader
                getFilename(startDate.getYear(), startDate.getMonthValue()));
       reset();
     }
-    catch (IOException e)
+    catch (Exception e)
     {
       logger.logData("DatabaseReader: getEvapotransData: Unable to read data: " + e.getLocalizedMessage());
       return null;
