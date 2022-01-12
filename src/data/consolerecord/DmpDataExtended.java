@@ -13,6 +13,7 @@
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
             10/16/21  Removed ET print.
+            01/11/21  Avoided ET error.
 */
 package data.consolerecord;
 
@@ -47,7 +48,7 @@ public class DmpDataExtended extends DmpData
   private float totalWindRun;
   private float heatDD;
   private float coolDD;
-  private float et;
+  private float et = 0;
 
   /**
    * Method to calcuate the extended values.  The underlying DMP data must first be set by calling setData().
@@ -61,10 +62,13 @@ public class DmpDataExtended extends DmpData
     thw = Calculations.calculateTHW(getOutsideTemp(), getAverageWindSpeed(), getOutsideHumidity());
     thsw = Calculations.calculateTHSW(getOutsideTemp(), getAverageWindSpeed(), getOutsideHumidity(), getSolarRadiation());
     EvapotransRecord evapotransData = dbReader.getEvapotransData(LocalDateTime.now());
-    et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
-                                  evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
-                                  evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
-                                  PROPS.getElevation(), PROPS.getLatitude());
+    if (evapotransData != null)
+    {
+      et = Calculations.calculateET(evapotransData.getMinTemp(), evapotransData.getMaxTemp(),
+                                    evapotransData.getAvgWindSpeed(), evapotransData.getAvgSolarRad(),
+                                    evapotransData.getMinHumidity(), evapotransData.getMaxHumidity(),
+                                    PROPS.getElevation(), PROPS.getLatitude());
+    }
 
     // 288 is 24 hours per day * 60 minutes per day / 5 minutes.
     // TODO: This value should be adjusted whenever a different archive interval is selected.
