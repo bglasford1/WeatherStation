@@ -15,6 +15,7 @@
 
   Mods:		  09/01/21  Initial Release.
             10/15/21  Fixed ET calculation.
+            01/13/22  Added set methods.
 */
 package data.consolerecord;
 
@@ -169,6 +170,11 @@ public class DmpData
     return outsideTemp;
   }
 
+  public void setOutsideTemp(short temp)
+  {
+    this.outsideTemp = temp;
+  }
+
   public float getHighOutsideTemp()
   {
     return highOutsideTemp / TENTHS;
@@ -177,6 +183,11 @@ public class DmpData
   public short getHighOutsideTempNative()
   {
     return highOutsideTemp;
+  }
+
+  public void setHighOutsideTemp(short hiTemp)
+  {
+    this.highOutsideTemp = hiTemp;
   }
 
   public float getLowOutsideTemp()
@@ -189,6 +200,11 @@ public class DmpData
     return lowOutsideTemp;
   }
 
+  public void setLowOutsideTemp(short lowTemp)
+  {
+    this.lowOutsideTemp = lowTemp;
+  }
+
   public float getInsideTemp()
   {
     return insideTemp / TENTHS;
@@ -197,6 +213,11 @@ public class DmpData
   public short getInsideTempNative()
   {
     return insideTemp;
+  }
+
+  public void setInsideTemp(short inTemp)
+  {
+    this.insideTemp = inTemp;
   }
 
   public short getNumOfWindSamples()
@@ -244,14 +265,29 @@ public class DmpData
     return highRainRate;
   }
 
+  public void setHighRainRate(short hiRainRate)
+  {
+    this.highRainRate = hiRainRate;
+  }
+
   public byte getOutsideHumidity()
   {
     return outsideHumidity;
   }
 
+  public void setOutsideHumidity(byte outHumidity)
+  {
+    this.outsideHumidity = outHumidity;
+  }
+
   public byte getInsideHumidity()
   {
     return insideHumidity;
+  }
+
+  public void setInsideHumidity(byte inHumidity)
+  {
+    this.insideHumidity = inHumidity;
   }
 
   public short getAverageWindSpeedNative()
@@ -261,7 +297,12 @@ public class DmpData
 
   public short getAverageWindSpeed()
   {
-    return (short)(averageWindSpeed);
+    return averageWindSpeed;
+  }
+
+  public void setWindSpeed(byte speed)
+  {
+    this.averageWindSpeed = speed;
   }
 
   public short getHighWindSpeedNative()
@@ -271,7 +312,12 @@ public class DmpData
 
   public short getHighWindSpeed()
   {
-    return (short)(highWindSpeed);
+    return highWindSpeed;
+  }
+
+  public void setHighWindSpeed(byte speed)
+  {
+    this.highWindSpeed = speed;
   }
 
   public byte getHighWindDirection()
@@ -279,9 +325,19 @@ public class DmpData
     return highWindDirection;
   }
 
+  public void setHighWindDirection(byte hiWindDirection)
+  {
+    this.highWindDirection = hiWindDirection;
+  }
+
   public byte getPrevailingWindDir()
   {
     return prevailingWindDir;
+  }
+
+  public void setWindDirection(byte windDirection)
+  {
+    this.prevailingWindDir = windDirection;
   }
 
   public short getHighSolarRadiation()
@@ -289,9 +345,19 @@ public class DmpData
     return highSolarRadiation;
   }
 
+  public void setHighSolarRadiation(byte hiSolar)
+  {
+    this.highSolarRadiation = hiSolar;
+  }
+
   public short getSolarRadiation()
   {
     return solarRadiation;
+  }
+
+  public void setSolarRadiation(byte solar)
+  {
+    this.solarRadiation = solar;
   }
 
   public byte getAverageUV()
@@ -299,9 +365,14 @@ public class DmpData
     return averageUV;
   }
 
-  public byte getEvapotranspiration()
+  public byte getEvapotranspirationNative()
   {
     return evapotranspiration;
+  }
+
+  public float getEvapotranspiration()
+  {
+    return evapotranspiration / THOUSANDTHS;
   }
 
   public void setEvapotranspiration(byte evapotranspiration)
@@ -329,6 +400,11 @@ public class DmpData
     return soilTemp1;
   }
 
+  public void setSoilTemp1(byte temp)
+  {
+    this.soilTemp1 = temp;
+  }
+
   public byte getRecordType()
   {
     return recordType;
@@ -338,33 +414,33 @@ public class DmpData
   public String toString()
   {
     return "Dmp Record: \n" +
-      "  DateStamp: " + getDateStamp() +
-      ", year: " + TimeUtil.getYear(getDateStamp()) +
-      ", month: " + TimeUtil.getMonth(getDateStamp()) +
-      ", day: " + TimeUtil.getDay(getDateStamp()) + "\n" +
-      "  TimeStamp: " + getTimeStamp() +
-      ", Hour: " + TimeUtil.getHour(getTimeStamp()) +
-      ", Minute: " + TimeUtil.getMinute(getTimeStamp()) + "\n" +
-      "  Out Temp: " + getOutsideTempNative() + "\n" +
-      "  High Temp: " + getHighOutsideTempNative() + "\n" +
-      "  Low Temp: " + getLowOutsideTempNative() + "\n" +
-      "  Out Humid: " + getOutsideHumidity() + "\n" +
-      "  Wind Speed: " + getAverageWindSpeed() + "\n" +
-      "  Prevailing Wind Dir: " + getPrevailingWindDir() + "\n" +
-      "  High Wind Spd: " + getHighWindSpeed() + "\n" +
-      "  High Wind Dir: " + getHighWindDirection() + "\n" +
-      "  Bar: " + getPressureNative() + "\n" +
-      "  Rain: " + getRainfallNative() + "\n" +
-      "  Rain Rate: " + getHighRainRateNative() + "\n" +
-      "  Solar Rad: " + getSolarRadiation() + "\n" +
-      "  High Solar Rad: " + getHighSolarRadiation() + "\n" +
-      "  Forecast: " + getForecastRule() + "\n" +
-      "  In Temp: " + getInsideTempNative() + "\n" +
-      "  In Humid: " + getInsideHumidity() + "\n" +
-      "  Wind Samp: " + getNumOfWindSamples() + "\n" +
-      "  Average UV: " + getAverageUV() + "\n" +
-      "  Evapotranspiration: " + getEvapotranspiration() + "\n" +
-      "  High UV: " + getHighUVIndex() + "\n" +
-      "  Soil Temp 1: " + getSoilTemp1Native() + "\n";
+           "  DateStamp: " + getDateStamp() +
+           ", year: " + TimeUtil.getYear(getDateStamp()) +
+           ", month: " + TimeUtil.getMonth(getDateStamp()) +
+           ", day: " + TimeUtil.getDay(getDateStamp()) + "\n" +
+           "  TimeStamp: " + getTimeStamp() +
+           ", Hour: " + TimeUtil.getHour(getTimeStamp()) +
+           ", Minute: " + TimeUtil.getMinute(getTimeStamp()) + "\n" +
+           "  Out Temp: " + getOutsideTempNative() + "\n" +
+           "  High Temp: " + getHighOutsideTempNative() + "\n" +
+           "  Low Temp: " + getLowOutsideTempNative() + "\n" +
+           "  Out Humid: " + getOutsideHumidity() + "\n" +
+           "  Wind Speed: " + getAverageWindSpeed() + "\n" +
+           "  Prevailing Wind Dir: " + getPrevailingWindDir() + "\n" +
+           "  High Wind Spd: " + getHighWindSpeed() + "\n" +
+           "  High Wind Dir: " + getHighWindDirection() + "\n" +
+           "  Bar: " + getPressureNative() + "\n" +
+           "  Rain: " + getRainfallNative() + "\n" +
+           "  Rain Rate: " + getHighRainRateNative() + "\n" +
+           "  Solar Rad: " + getSolarRadiation() + "\n" +
+           "  High Solar Rad: " + getHighSolarRadiation() + "\n" +
+           "  Forecast: " + getForecastRule() + "\n" +
+           "  In Temp: " + getInsideTempNative() + "\n" +
+           "  In Humid: " + getInsideHumidity() + "\n" +
+           "  Wind Samp: " + getNumOfWindSamples() + "\n" +
+           "  Average UV: " + getAverageUV() + "\n" +
+           "  Evapotranspiration: " + getEvapotranspirationNative() + "\n" +
+           "  High UV: " + getHighUVIndex() + "\n" +
+           "  Soil Temp 1: " + getSoilTemp1Native() + "\n";
   }
 }
