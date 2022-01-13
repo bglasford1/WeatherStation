@@ -22,6 +22,7 @@
             10/18/21  Got Daily Solar Energy working.
             01/10/22  End of year DMPAFT error.
             01/11/22  Minor logging tweaks.
+            01/13/22  Tweaked ET method.
 */
 package dbif;
 
@@ -612,7 +613,7 @@ public class DatabaseWriter
         out.write((byte)128);
       }
       out.write(data.getForecastRule());
-      out.write(data.getEvapotranspiration());
+      out.write(data.getEvapotranspirationNative());
       out.write(data.getSoilTemp1Native());
       out.write((byte)255); // soilTemp2
       out.write((byte)255); // soilTemp3
