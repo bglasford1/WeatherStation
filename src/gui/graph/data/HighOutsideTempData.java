@@ -21,7 +21,7 @@ public class HighOutsideTempData extends LineDataPlotter
   {
     initialize(GraphDefs.HIGH_OUTTEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getHighOutsideTempColor(),
                null,
                -1,

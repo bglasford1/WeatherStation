@@ -21,7 +21,7 @@ public class InsideTempData extends LineDataPlotter
   {
     initialize(GraphDefs.INTEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getInsideTempColor(),
                PROPS.getInsideTempChart(),
                PROPS.getInsideTempStreamIndex(),

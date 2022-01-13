@@ -20,7 +20,7 @@ public class HeatIndexData extends LineDataPlotter
   public HeatIndexData(int dataSize)
   {
     initialize(GraphDefs.HEAT_INDEX_STRING, dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getHeatIndexColor(),
                PROPS.getHeatIndexChart(),
                PROPS.getHeatIndexStreamIndex(),

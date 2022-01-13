@@ -21,7 +21,7 @@ public class WindChillData extends LineDataPlotter
   {
     initialize(GraphDefs.WIND_CHILL_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getWindChillColor(),
                PROPS.getWindChillChart(),
                PROPS.getWindChillStreamIndex(),

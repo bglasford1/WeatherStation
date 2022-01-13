@@ -21,7 +21,7 @@ public class EtData extends LineDataPlotter
   {
     initialize(GraphDefs.ET_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getEtColor(),
                PROPS.getEtChart(),
                PROPS.getEtStreamIndex(),

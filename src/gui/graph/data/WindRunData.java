@@ -21,7 +21,7 @@ public class WindRunData extends LineDataPlotter
   {
     initialize(GraphDefs.WIND_RUN_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getWindRunColor(),
                PROPS.getWindRunChart(),
                PROPS.getWindRunStreamIndex(),

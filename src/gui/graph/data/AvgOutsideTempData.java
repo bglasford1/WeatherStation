@@ -23,7 +23,7 @@ public class AvgOutsideTempData extends LineDataPlotter
   {
     initialize(GraphDefs.AVG_OUTTEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getAvgOutsideTempColor(),
                null,
                -1,

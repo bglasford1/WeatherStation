@@ -21,7 +21,7 @@ public class OutsideTempData extends LineDataPlotter
   {
     initialize(GraphDefs.OUTTEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getOutsideTempColor(),
                PROPS.getOutsideTempChart(),
                PROPS.getOutsideTempStreamIndex(),

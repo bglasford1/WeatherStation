@@ -21,7 +21,7 @@ public class GreenhouseTempData extends LineDataPlotter
   {
     initialize(GraphDefs.GREENHOUSE_TEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getGreenTempColor(),
                PROPS.getGreenTempChart(),
                PROPS.getGreenTempStreamIndex(),

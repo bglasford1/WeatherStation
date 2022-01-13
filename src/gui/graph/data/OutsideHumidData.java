@@ -21,7 +21,7 @@ public class OutsideHumidData extends LineDataPlotter
   {
     initialize(GraphDefs.OUTHUMID_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getOutsideHumidColor(),
                PROPS.getOutsideHumidChart(),
                PROPS.getOutsideHumidStreamIndex(),

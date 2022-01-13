@@ -21,7 +21,7 @@ public class HeatDDData extends LineDataPlotter
   {
     initialize(GraphDefs.HEAT_DD_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getHeatDDColor(),
                PROPS.getHeatDDChart(),
                PROPS.getHeatDDStreamIndex(),

@@ -21,7 +21,7 @@ public class ThswData extends LineDataPlotter
   {
     initialize(GraphDefs.THSW_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getThswColor(),
                PROPS.getThswChart(),
                PROPS.getThswStreamIndex(),

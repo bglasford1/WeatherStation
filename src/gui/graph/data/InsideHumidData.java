@@ -21,7 +21,7 @@ public class InsideHumidData extends LineDataPlotter
   {
     initialize(GraphDefs.INHUMID_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getInsideHumidColor(),
                PROPS.getInsideHumidChart(),
                PROPS.getInsideHumidStreamIndex(),

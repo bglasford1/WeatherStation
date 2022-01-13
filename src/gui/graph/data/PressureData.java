@@ -21,7 +21,7 @@ public class PressureData extends LineDataPlotter
   {
     initialize(GraphDefs.PRESSURE_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getPressureColor(),
                PROPS.getPressureChart(),
                PROPS.getPressureStreamIndex(),

@@ -21,7 +21,7 @@ public class WindDirectionData extends DirectionDataPlotter
   {
     initialize(GraphDefs.WIND_DIR_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getWindDirColor(),
                PROPS.getWindDirChart(),
                PROPS.getWindDirStreamIndex(),

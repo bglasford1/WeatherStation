@@ -21,7 +21,7 @@ public class SolarData extends LineDataPlotter
   {
     initialize(GraphDefs.SOLAR_RAD_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getSolarColor(),
                PROPS.getSolarChart(),
                PROPS.getSolarStreamIndex(),

@@ -41,6 +41,8 @@ public class AbstractDataPlotter
   private Float maxFixed;
   private Float maxDelta;
 
+  public float lineWidth = 0.5f;
+
   // Items used for the stream chart
   private TimeSeriesCollection streamDataset;
   private final XYLineAndShapeRenderer streamRenderer = new XYLineAndShapeRenderer();

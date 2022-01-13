@@ -23,7 +23,7 @@ public class IssReceptionData extends LineDataPlotter
   {
     initialize(GraphDefs.ISS_RECEPTION_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getIssReceptionColor(),
                PROPS.getIssReceptionChart(),
                PROPS.getIssReceptionStreamIndex(),

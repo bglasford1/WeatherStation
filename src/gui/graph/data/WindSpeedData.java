@@ -21,7 +21,7 @@ public class WindSpeedData extends LineDataPlotter
   {
     initialize(GraphDefs.WIND_SPEED_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getWindSpeedColor(),
                PROPS.getWindSpeedChart(),
                PROPS.getWindSpeedStreamIndex(),

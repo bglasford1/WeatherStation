@@ -21,7 +21,7 @@ public class CoolDDData extends LineDataPlotter
   {
     initialize(GraphDefs.COOL_DD_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getCoolDDColor(),
                PROPS.getCoolDDChart(),
                PROPS.getCoolDDStreamIndex(),

@@ -21,7 +21,7 @@ class HighWindSpeedData extends LineDataPlotter
   {
     initialize(GraphDefs.HIGH_WIND_SPEED_STRING,
                dataSize,
-               1f,
+               lineWidth,
                PROPS.getHighWindSpeedColor(),
                null,
                -1,

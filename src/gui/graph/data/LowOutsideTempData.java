@@ -21,7 +21,7 @@ public class LowOutsideTempData extends LineDataPlotter
   {
     initialize(GraphDefs.LOW_OUTTEMP_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getLowOutsideTempColor(),
                null,
                -1,

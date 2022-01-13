@@ -21,7 +21,7 @@ public class DewPointData extends LineDataPlotter
   {
     initialize(GraphDefs.DEW_POINT_STRING,
                dataSize,
-               1.0f,
+               lineWidth,
                PROPS.getDewPointColor(),
                PROPS.getDewPointChart(),
                PROPS.getDewPointStreamIndex(),
